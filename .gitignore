@@ -130,4 +130,6 @@ dmypy.json
 data-1k/
 2019_imports_4128764_nbs.json
 ntb_20*.csv
-
+*.csv
+*.pth
+NBNames.json
