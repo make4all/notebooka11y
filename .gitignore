@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+data-1k/
+2019_imports_4128764_nbs.json
+ntb_20*.csv
+
