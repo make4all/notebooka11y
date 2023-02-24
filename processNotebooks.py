@@ -2,6 +2,8 @@
 # from logging import exception
 # from tkinter import E
 # from tkinter import E
+# %%
+import string
 from processors.import_processor import get_imports
 import logging
 import nbformat
@@ -9,6 +11,8 @@ import json
 import pandas as pd
 import numpy as np
 import pandas as pd
+import pypandoc
+import re
 # import pyspark
 # from pyspark.sql import *
 # from pyspark.sql.functions import *
@@ -18,7 +22,9 @@ logging.basicConfig(filename="log/processNotebooks.log", filemode='w')
 # Creating an object
 logger = logging.getLogger()
 # Setting the threshold of logger to DEBUG
+
 logger.setLevel(logging.DEBUG)
+text = ''
 # initialize spark
 # Let's initialize the Spark context.
 # create the session
@@ -27,8 +33,9 @@ logger.setLevel(logging.DEBUG)
 # # create the context
 # sc = pyspark.SparkContext(conf=conf)
 # spark = SparkSession.builder.getOrCreate()
-
-# lambdas
+# %% [markdown]
+# # lambdas
+# %%
 def getLanguage(x):
     language = None
     # x = row.raw
@@ -158,7 +165,32 @@ def storeBase64(row):
         except Exception as     e:
             logger.exception("Exception occurred for file '"+ imageFileName + "': "+ repr(e))
         i = i+1
-# load the text file into a pandas dataframe
+
+# get text from the raw column and store it in a new column 'text'.
+def getTextFromCells(raw):
+    text = ''
+    for cell in raw['cells']:
+        if cell['cell_type'] == 'markdown':
+            text += cell['source']
+    if len(text) > 0:
+        try:
+            plain = pypandoc.convert_text(text, 'plain', format='md', extra_args=['--wrap=none'])
+        except Exception as e:
+            logger.exception("Exception occurred for string '"+ text + "': "+ repr(e))
+            plain = None
+        return plain
+    else:
+        return None
+
+
+def getPlainText(textColumn):
+    global text
+    text = text+textColumn
+
+
+# %% [markdown]
+# # load the text file into a pandas dataframe
+# %%
 fnames = []
 with open("data-1k/sample-1000.txt") as f:
     for line in f:
@@ -213,11 +245,31 @@ logger.info("sum of numImages column")
 logger.info(validFiles['numImages'].sum())
 
 logger.info(validFiles[['fileNames','language','numImages']].head(5))
+# %% [markdown]
 # convert each of these base64 images into pngs and store them on disc
+# %%
 # validFiles = validFiles.apply(lambda x: storeBase64(x), axis=1)
+# %% [markdown]
+# # prepare text for LDA
 
-validFiles = validFiles.drop(['raw', 'source', 'output', 'images'], axis=1)
+# %%
+validFiles['text'] = validFiles['raw'].apply(lambda x: getTextFromCells(x))
+validText = validFiles.dropna()
+validText = validText['text'].apply(lambda x: getPlainText(x))
+logger.info("files with parsable markdown text  ")
+logger.info(validText.count())
+# validText = validText.dropna()
+# %%
+
+text.translate(str.maketrans('', '', string.punctuation))
+text =  re.sub('[,\.!?%=+-/#$:;]', '', text)
+print(len(text))
+
+# %%
+validFiles = validFiles.drop(['raw', 'source', 'output', 'images','text'], axis=1)
 validFiles.to_csv('nb_processed.csv', header=True, index=False)
-
+# write text into a text file
+with open('nbText.txt', 'w') as f:
+    f.write(text)
 # validFilesRdd = spark.createDataFrame(validFiles).rdd
 # logger.info(validFilesRdd.show())
