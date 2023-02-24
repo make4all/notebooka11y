@@ -2,230 +2,197 @@
 # # code to perform LDA.
 # ## imports and setup
 
+# %% [markdown]
+# ### pip installs.
+# Please uncomment the code in the next cell if running from a jupytor notebook environment.
+# I added this cell much later than when I started installing packages so I may have missed a few pip commands. Please update this cell if there are missing install commands.
 # %%
-from tokenize import PlainToken
+# ! pip install nltk gensim wordcloud
+# ! pip instal spacy
+# !python -m spacy download en_core_web_sm
+# %%
+
+from ast import In
+import pdb
+from pprint import pprint
 import string
+from matplotlib import pyplot as plt
 import numpy as np
 import logging
-import nbformat
-import json
+# import nbformat
+# import json
 import pandas as pd
-import pandas as pd
-import pypandoc
+from sklearn.decomposition import LatentDirichletAllocation
+import spacy
+import tqdm
+# import pandas as pd
+# import pypandoc
+from wordcloud import WordCloud
+import nltk
+import gensim
+from gensim.utils import simple_preprocess
+from gensim.models import CoherenceModel
 
-logging.basicConfig(filename="log/processNotebooks.log", filemode='w')
+logging.basicConfig(filename="log/lda.log", filemode='w')
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 text = ''
+nlp = spacy.load("en_core_web_sm", disable=['parser', 'ner'])
+nltk.download('stopwords')
+from nltk.corpus import stopwords
 # %% [markdown]
 # # lambdas.
 # Please include lambdas in the cell below. You should run this cell if you add a new lambda.
 # %%
-def getLanguage(x):
-    language = None
-    # x = row.raw
-    if 'kernelspec' in x['metadata'].keys() :
-        language = x['metadata']['kernelspec']['name']
-    elif 'language_info' in x['metadata'].keys():
-        language = x['metadata']['language_info']['name']
-    else:
-        logger.exception("kernelspec and language_info keys not present in metadata. printing metadata entry for notebook")
-        logger.error(x['metadata'])
-        language = None
-    return language    
-# get code cells with images and plots
-def getSourceFromCells(x):
-    cells = x['cells']
-    codeCells = []
-    for cell in cells:
-        if cell['cell_type'] == 'code':
-            # check if cell contains display type as images or plots
-            if 'outputs' in cell.keys():
-                outputs = cell['outputs']
-                for output in outputs:
-                    if 'data' in output.keys():
-                        data = output['data']
-                        if 'image/png' in data.keys():
-                            codeCells.append(cell['source'])
-                        elif 'image/jpeg' in data.keys():
-                            codeCells.append(cell['source'])
-                        elif 'image/svg+xml' in data.keys():
-                            codeCells.append(cell['source'])
 
-            #codeCells.append(cell)
-    
-    if len(codeCells) == 0:
-        codeCells = None
-    return codeCells
-
-# get output cells
-def getOutputFromCells(x):
-    cells = x['cells']
-    outputCells = []
-    for cell in cells:
-        if cell['cell_type'] == 'code':
-            # check if cell contains display type as images or plots
-            if 'outputs' in cell.keys():
-                outputs = cell['outputs']
-                for output in outputs:
-                    if 'data' in output.keys():
-                        data = output['data']
-                        if 'image/png' in data.keys():
-                            outputCells.append(output)
-                        elif 'image/jpeg' in data.keys():
-                            outputCells.append(output)
-                        elif 'image/svg+xml' in data.keys():
-                            outputCells.append(output)
-
-            #codeCells.append(cell)
-    if(len(outputCells) == 0):
-        outputCells = None
-    return outputCells
-
-# get base64 image metadata from each cell  
-def getBase64FromCells(x):
-    cells = x['cells']
-    base64Images = []
-    for cell in cells:
-        if cell['cell_type'] == 'code':
-            # check if cell contains display type as images or plots
-            if 'outputs' in cell.keys():
-                outputs = cell['outputs']
-                for output in outputs:
-                    if 'data' in output.keys():
-                        data = output['data']
-                        if 'image/png' in data.keys():
-                            base64Images.append(data['image/png'])
-                        elif 'image/jpeg' in data.keys():
-                            base64Images.append(data['image/jpeg'])
-                        elif 'image/svg+xml' in data.keys():
-                            base64Images.append(data['image/svg+xml'])
-
-            #codeCells.append(cell)
-    
-    if len(base64Images) == 0:
-        base64Images = None
-    return base64Images
-
-def fileToNbNode(x):
-    a = None
-    try:
-        # print("loading file: data-1k/" + x)
-        a = nbformat.read("data-1k/" + x, as_version=4)
-    except Exception as e:
-        # print(x)
-        logger.exception("Exception occurred for file '"+ x + "': "+ repr(e))
-        
-        a = None
-    return a
-# store the base 64 images into a file
-def storeBase64(row):
-    i=0
-    for image in row['images']:
-        imageFileName = row['fileNames'] + "-"+str(i)+".png" 
-        try:
-            with open("data-1k/base64Images/"+imageFileName, "w") as f:
-                f.write(image)
-        except Exception as     e:
-            logger.exception("Exception occurred for file '"+ imageFileName + "': "+ repr(e))
-        i = i+1
-
-# get text from the raw column and store it in a new column 'text'.
-def getTextFromCells(raw):
-    text = ''
-    for cell in raw['cells']:
-        if cell['cell_type'] == 'markdown':
-            text += cell['source']
-    if len(text) > 0:
-        try:
-            plain = pypandoc.convert_text(text, 'plain', format='md', extra_args=['--wrap=none'])
-        except Exception as e:
-            logger.exception("Exception occurred for string '"+ text + "': "+ repr(e))
-            plain = None
-        return plain
-    else:
-        return None
-
-# remove the punctuations from text and lower them to prepare for LDAModel
-def processTextForLDA(txt):
-    # re.sub('[,\.!?%=+-/]', '', x)
-    txt.translate(str.maketrans('', '', string.punctuation))
-# get all the plain text into one string
-def getPlainText(textColumn):
-    global text
-    text = text+textColumn
-
-# %% [markdown]
-# Here, we will be using code from the processNotebooks to get markdown strings. replace these cells with updated code once I have access.
-# # process notebooks
 # %%
-# load the text file into a pandas dataframe
-fnames = []
-with open("data-1k/sample-1000.txt") as f:
-    for line in f:
-        fnames.append(line.strip())
-# load fnames into a pandas dataframe with column "fileNames"
-df = pd.DataFrame(fnames, columns=["fileNames"])
-validFiles = df.dropna()
-# print("number of valid files")
-
-# fnames = pd.read_csv("data-1k/sample-1000.txt", sep="\n", header=None, names=["fileNames"])
-
-# print the dataframe
-# prevent truncation when printing
-
-# for each fileName in df, load it using nbformat and store it in a new column "raw"
-df['raw'] = df['fileNames'].apply(lambda x: fileToNbNode(x))
-validFiles = df.dropna()
-logger.info("number of valid files")
-logger.info(validFiles.count())
-# validFiles.set_option('display.width', 999)
-pd.options.display.max_colwidth = 999
-# print(validFiles.count())
-
-# now get the kernel type and language for each file and store it in the "language" column of this dataframe.
-validFiles['language'] = validFiles['raw'].apply(lambda x: getLanguage(x) )
-print(f'Shape of validfiles with lambda: {validFiles.shape}')
-# logger.info(validFiles[['fileNames','language']].head(20))
-validFiles= validFiles.dropna()
-print(f'Validfiles with drop na : {validFiles.shape}')
-# # gropup by language and store the count for each language in the df in a new column "count"
-validFiles = validFiles[validFiles['language'].str.contains('py')]
-print(f'Validfiles with language filter: {validFiles.shape}')
-# languageGroups = validFiles.groupby('language').count()
-# logger.info(languageGroups.head(10))
-logger.info(" number of files after dropping values with no language_info is")
-logger.info(validFiles.count())
-
-validFiles['source'] = validFiles['raw'].apply(lambda x: getSourceFromCells(x))
-validFiles['output'] = validFiles['raw'].apply(lambda x: getOutputFromCells(x))
-validFiles= validFiles.dropna()
-logger.info("valid files with code cells with outputs")
-logger.info(validFiles.count())
-validFiles['images'] = validFiles['raw'].apply(lambda x: getBase64FromCells(x))
-validFiles = validFiles.dropna()
-logger.info("valid files with base64 image outputs")
-logger.info(validFiles.count())
-validFiles['numImages'] = validFiles['images'].apply(lambda x: len(x))
-logger.info("sum of numImages column")
-logger.info(validFiles['numImages'].sum())
-
+with open('nbText.txt','r') as f:
+    text = f.read()
+text = text.lower()    
+# print(len(text.split()))
 # %% [markdown]
-# ## extracting text for LDA.
-# Here, we use pandoc through pipandoc to extract text from the markdown cells of jupytor notebooks. We drop text from invalid markdown cells that pandoc is unable to process.
+# ## wordcloud.
+# Here, we will visualize the data using a wordcloud. Please uncomment the code below if running in a notebook environment. It is commented out to save compute time when running in the shell.
+# %% 
+wordcloud = WordCloud(background_color="white", max_words=5000, contour_width=3, contour_color='steelblue')
+wordcloud.generate(text)
+# Visualize the word cloud
+wordcloud.to_image()
+wordcloud.to_file('wordcloud.png')
+# %% [markdown]
+# now perform the LatentDirichletAllocation
+
+
 # %%
-validFiles['text'] = validFiles['raw'].apply(lambda x: getTextFromCells(x))
-validText = validFiles.dropna()
-logger.info("files with parsable markdown text  ")
-logger.info(validText.count())
-validText = validText.dropna()
 
-validText['preparedText'] = validText['text'].apply(lambda x: processTextForLDA(x))
-validText = validText.dropna()
-logger.info("valid files with text after removing punctuation")
-logger.info(validText.count())
+stop_words = stopwords.words('english')
+stop_words_extension = ['model','train','test','use','data','matplotlib'] # tweek based on results.
+stop_words.extend(stop_words_extension)
+def sent_to_words(sentences):
+        # deacc=True removes punctuations
+        return(gensim.utils.simple_preprocess(sentences, deacc=True))
+def remove_stopwords(texts):
+    return [[word for word in simple_preprocess(str(doc)) if word not in stop_words] for doc in texts]
 
-validText = validText['preparedText'].apply(lambda x: getPlainText(x))
-logger.info("plain text from all files is ")
-print(len(text))
-logger.info(validText[['fileNames','language','numImages','preparedText']].head(5))
+def stemWords(texts):
+    stemmer = nltk.stem.porter.PorterStemmer()
+    return [[stemmer.stem(word) for word in doc] for doc in texts]
+
+# make bigrams
+def makeBigrams(texts):
+     return [bigram_mod[text] for text in texts]
+# make trigrams
+def makeTrigrams(texts):
+         return [trigram_mod[bigram_mod[doc]] for doc in texts] # I hate this line.... change it once I understand what's going on here.
+# lemmatization
+def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
+    output = []
+    for text in texts:
+        doc = nlp(" ".join(text))
+        # lematize doc and append to output
+        output.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
+    return output
+
+
+data_words = list(sent_to_words(text))
+print("data_words after sent_to_words")
+print(data_words[:10])
+# build bigram and trigram models. I don't fully understand why we're doing this; following an other tutorial in the hopes of getting useful output from the model
+bigram = gensim.models.Phrases(data_words, min_count=5, threshold=100) # higher threshold fewer phrases.
+trigram = gensim.models.Phrases(bigram[data_words], threshold=100)
+print("built bigram and trigram models")
+# from what I understand, this probably freezes the model owing to better performance.
+bigram_mod = gensim.models.phrases.Phraser(bigram)
+trigram_mod = gensim.models.phrases.Phraser(trigram)
+print("got frozen bygram and trigram models")
+# remove stop words
+data_words = remove_stopwords(data_words)
+print("removed stop words")
+
+data_bigrams = makeBigrams(data_words)
+print("made bigrams from data_words")
+print(data_bigrams[:5])
+print("lemmatization")
+data_lematized = lemmatization(data_bigrams, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV'])
+print("lemmatized data")
+print(data_lematized[:1][0][:30])
+# stem words
+# data_words = stemWords(data_words)
+# print("data_words")
+# insert a pdb breakpoint
+# pdb.set_trace()
+# print(data_words[:10])
+id2word = gensim.corpora.Dictionary(data_lematized)
+texts = data_lematized
+# Term Document Frequency
+corpus = [id2word.doc2bow(text) for text in texts]
+
+# View
+print("corpus")
+print(corpus[:1][0][:30])
+# %% [markdown]
+# the data and the corpus is ready. now train the LDA model!
+# %%
+# number of topics
+num_topics = 10
+# build LDA Model  
+lda_model = gensim.models.LdaMulticore(corpus=corpus,id2word=id2word,num_topics=num_topics,random_state = 100, chunksize=100,passes=10, per_word_topics= True) 
+pprint(lda_model.print_topics())
+print("coherence score for base model:")
+CoherenceModel(model=lda_model, texts = data_lematized, dictionary = id2word, coherence = 'c_v').get_coherence()
+# %% [markdown]
+# ## hyperparameter tuning
+# Here, we will use the tutorial example to tune the hyperparameters to see if we can get better results. Note that the code from here onwards takes time to run.
+
+# %%
+# helper function to compute coherence values.
+def computeCoherence(corpus,dictionary,numTopics,a,b,data=data_lematized):
+     print("training model with parameters: numTopics = {}, alpha = {}, beta = {}".format(numTopics,a,b))
+     ldaModel = gensim.models.LdaMulticore(corpus=corpus,id2word=dictionary,num_topics=numTopics,random_state = 100, chunksize=100,passes=10, alpha=a, eta=b, per_word_topics= True)
+     ldaCoherenceModel = CoherenceModel(model=ldaModel, texts = data, dictionary = id2word, coherence = 'c_v')
+     print("coherence value is ")
+     print(ldaCoherenceModel.get_coherence())
+     return ldaCoherenceModel.get_coherence()
+
+
+# topics range
+minTopics = 2
+maxTopics = 11
+numTopicsRange = range(minTopics,maxTopics,1)
+# alpha range
+alphaRange = list(np.arange(0.01, 1, 0.3))
+alphaRange.append('symmetric')
+alphaRange.append('asymmetric')
+betaRange = list(np.arange(0.01, 1, 0.3))
+betaRange.append('symmetric')
+numberOfDocs = len(corpus)
+corpusSets = [gensim.utils.ClippedCorpus(corpus, int(numberOfDocs*0.75)),corpus]
+corpusTitle = ['75% Corpus', '100% Corpus']
+modelResults = {'Validation_Set': [],'topics':[],'alpha':[],'beta':[],'coherence':[]}
+bar = tqdm.tqdm(total = len(numTopicsRange)*len(alphaRange)*len(betaRange)*len(corpusSets))
+print("parameter tuning for {} corpus sets, for a total of {} alpha, {} beta, and {}k values".format(len(corpusSets),len(alphaRange),len(betaRange),len(numTopicsRange)))
+for i in range(len(corpusSets)):
+    for k in numTopicsRange:
+        for a in alphaRange:
+            for b in betaRange:
+                print("computing coherence for corpus {}".format(corpusTitle[i]))
+                cv = computeCoherence(corpus=corpusSets[i],dictionary=id2word,numTopics=k,a=a,b=b)
+                modelResults['Validation_Set'].append(corpusTitle[i])
+                modelResults['topics'].append(k)
+                modelResults['alpha'].append(a)
+                modelResults['beta'].append(b)
+                modelResults['coherence'].append(cv)
+                bar.update(1)
+# %%
+# visualize the results and save the plot to a file
+df = pd.DataFrame(modelResults)
+df.to_csv("modelResults.csv")
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(df['topics'],df['alpha'],df['beta'],c=df['coherence'])
+ax.set_xlabel('numTopics')
+ax.set_ylabel('alpha')
+ax.set_zlabel('beta')
+ax.set_title('Coherence Scores')
+plt.show()
+fig.savefig('modelResults.png')
