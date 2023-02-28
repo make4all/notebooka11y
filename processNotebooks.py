@@ -264,7 +264,22 @@ logger.info(validText.count())
 text.translate(str.maketrans('', '', string.punctuation))
 text =  re.sub('[,\.!?%=+-/#$:;]', '', text)
 print(len(text))
+# %% [markdown]
+# # get notebooks with the most number of images
 
+# This is to test if pa11y can catch visualization inaccessibility errors
+#%%
+# get the file name of the notebook with the most numImages
+fileMaxImages = validFiles[validFiles['numImages'] == validFiles['numImages'].max()]['fileNames'].values[0]
+logger.info("file with the most images is " + fileMaxImages)
+# use pypandoc and convert this notebook into html
+with open("data-1k/"+fileMaxImages, "r") as f:
+    html = pypandoc.convert_file("data-1k/"+fileMaxImages, 'html', format='ipynb')
+    with open("data-1k/"+fileMaxImages+".html", "w") as fh:
+        fh.write(html)
+
+# %% [markdown]
+# # cleanup and save.
 # %%
 validFiles = validFiles.drop(['raw', 'source', 'output', 'images','text'], axis=1)
 validFiles.to_csv('nb_processed.csv', header=True, index=False)
