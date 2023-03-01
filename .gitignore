@@ -133,3 +133,7 @@ ntb_20*.csv
 *.csv
 *.pth
 NBNames.json
+.idea/
+NBImages.ipynb
+nbText.txt
+wordcloud.png
