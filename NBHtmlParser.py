@@ -4,7 +4,6 @@
 # ## imports
 # %%
 
-from os import access
 from CellMetadata import NotebookCell
 import pandas as pd
 # from bs4 import BeautifulSoup
@@ -72,6 +71,8 @@ def getCellsFromRaw(row):
             # print(f"creating cellType: {cellType}")
             # print(f"class for cell {list(cell.classes)}")
         notebookCell = NotebookCell(row['fileNames'], cellType)
+        if 'jp-mod-noOutputs' in cellClass or cellType == 'markdown':
+            notebookCell.has_output= False
         headings = getHeadings(cell)
         # has_headings is true even if one value is > 0
         notebookCell.has_heading = any([headings['h1'] > 0, headings['h2'] > 0, headings['h3']
@@ -87,9 +88,32 @@ def getCellsFromRaw(row):
         notebookCell.has_links =  numLinks > 0
         notebookCell.num_links = numLinks
         # has_tables is true if the cell has tables.
-        numTables = len(cell.xpath('.//table'))
+        tables = cell.xpath('.//table')
+        numTables = len(tables)
         notebookCell.has_tables = numTables > 0
+        tableMetadataList = []
+        # print(f"processing {len(tables)} tables")
+        for table in tables:
+            # get the size of the table
+            numRows = len(table.xpath('.//tr'))
+            # get number of columns
+            numColumns = len(table.xpath('.//td'))
+            # get if table is uniform. todo.
+            # isTableUniform = True
+            # print(f"table is {numRows} x {numColumns}, and is uniform = {isTableUniform}. processing rows")
+            # for row in table.xpath('.//tr'):
+            #     if len(row[1].xpath('.//td')) != numColumns:
+            #         print(f"table is not uniform. number of columns = {len(row.xpath('.//td'))}")
+            #         print(f"markup is {html.tostring(row)}")
+            #         isTableUniform = False
+            #         break
+            tableMetadata = {}
+            tableMetadata['num_rows'] = numRows
+            tableMetadata['num_columns'] = numColumns
+            # tableMetadata['is_uniform'] = isTableUniform
+            tableMetadataList.append(tableMetadata)
         notebookCell.num_tables = numTables
+        notebookCell.table_metadata = tableMetadataList
         numMath = len(cell.cssselect('.MathJax_Preview'))
         notebookCell.has_math = numMath > 0
         notebookCell.num_math = numMath
@@ -152,6 +176,7 @@ vf2 = validFiles['codeCellsWithOutput'].apply(pd.Series)
 validFiles = pd.concat([vf1, vf2], axis=1)
 print("validFiles after expanding noteBookCells ",validFiles.shape)
 print(validFiles.head())
+print(validFiles.describe())
 # %% [markdown]
 # #### save df to file
 # %%
