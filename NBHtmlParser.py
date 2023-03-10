@@ -76,10 +76,25 @@ def getCellsFromRaw(row):
         # has_headings is true even if one value is > 0
         notebookCell.has_heading = any([headings['h1'] > 0, headings['h2'] > 0, headings['h3']
                                         > 0, headings['h4'] > 0, headings['h5'] > 0, headings['h6'] > 0])
+        notebookCell.num_h1 = headings['h1']
+        notebookCell.num_h2 = headings['h2']
+        notebookCell.num_h3 = headings['h3']
+        notebookCell.num_h4 = headings['h4']
+        notebookCell.num_h5 = headings['h5']
+        notebookCell.num_h6 = headings['h6']
         # has_links is true if any of the nodes has a link
-        notebookCell.has_links = len(cell.xpath('.//a')) > 0
+        numLinks = len(cell.xpath('.//a'))
+        notebookCell.has_links =  numLinks > 0
+        notebookCell.num_links = numLinks
         # has_tables is true if the cell has tables.
-        notebookCell.has_tables = len(cell.xpath('.//table')) > 0
+        numTables = len(cell.xpath('.//table'))
+        notebookCell.has_tables = numTables > 0
+        notebookCell.num_tables = numTables
+        numMath = len(cell.cssselect('.MathJax_Preview'))
+        notebookCell.has_math = numMath > 0
+        notebookCell.num_math = numMath
+        # todo graphics and has_interactive
+
         notebookCells.append(vars(notebookCell))
         # print("appending")
         # print(dict(notebookCell))
@@ -102,23 +117,42 @@ with open("data-1k/sample-1000.txt") as f:
 # load fnames into a pandas dataframe with column "fileNames"
 df = pd.DataFrame(fnames, columns=["fileNames"])
 validFiles = df.dropna()
-print(f"loaded {validFiles.shape}")
+# %% [markdown]
+# ## parse using lxml
+# %%
 validFiles['raw'] = validFiles['fileNames'].apply(lambda x: supify(x))
 validFiles = validFiles.dropna()
 print("valid files with lxml html nodes: ", validFiles.shape)
 # print(validFiles.head())
 # validFiles['headings'] = validFiles['raw'].apply(lambda x: getHeadings(x))
+# %% [markdown]
+# ## parse each cell.
+# %%
 validFiles['codeCellsWithOutput'] = validFiles.apply(
     lambda x: getCellsFromRaw(x), axis=1)
 
 validFiles = validFiles.dropna()
 print("valid files after getting cells ", validFiles.shape)
 # %% [markdown]
-# # explode DF, drop, and save
+# ## explode DF, drop, and save
+# %% [markdown]
+# ### add rows to validFiles.
+# each row should contain one cell
 # %%
-# add rows to validFiles. each row should contain one cell
 validFiles = validFiles.drop(columns=['raw'])
-validFiles = validFiles.explode('codeCellsWithOutput')
+validFiles = validFiles.explode('codeCellsWithOutput',True)
 validFiles = validFiles.dropna()
 print("validFiles after creating a cell for each row: ", validFiles.shape)
+# print(validFiles.head())
+# %% [markdown]
+# #### expand NotebookCell objects
+# %%
+vf1 = validFiles.drop(['codeCellsWithOutput'], axis=1)
+vf2 = validFiles['codeCellsWithOutput'].apply(pd.Series)
+validFiles = pd.concat([vf1, vf2], axis=1)
+print("validFiles after expanding noteBookCells ",validFiles.shape)
 print(validFiles.head())
+# %% [markdown]
+# #### save df to file
+# %%
+validFiles.to_csv('nb_processed_cell_html.csv',header=True, index=False)
