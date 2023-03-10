@@ -1,31 +1,25 @@
-from enum import Enum
-
-from regex import P
 
 
 
-class CellType(Enum):
-    CODE = "code"
-    MARKDOWN = "markdown"
 
-class NotebookCell:
+class NotebookCell(object):
     cell_seq_num = 0
     fileNameState = ''
 
+    cell_execution_order = None
+    cellType = None
+
     def __init__(self, filename,cellType):
-        self.filename = filename
+
+
         if(NotebookCell.fileNameState != filename):
             NotebookCell.cell_seq_num = 0
             NotebookCell.fileNameState = filename
 
         self.cell_seq_num = NotebookCell.cell_seq_num
         NotebookCell.cell_seq_num += 1
-        if CellType == "code":
-            self.cell_type = CellType.CODE
-        elif CellType == "markdown":
-            self.cell_type = CellType.MARKDOWN
-        else:
-            raise ValueError("cell_type must be either 'code' or 'markdown'")
+        self.cellType = cellType
+        
         self._has_output = False
         self._no_outputs = False
         self._output_contains_graphics = False
@@ -207,25 +201,25 @@ class NotebookCell:
             def num_h6(self, value):
                 self._num_h6 = value
 
-    def to_dict(self):
-        return {
-            "filename": self.filename,
-            "cell_seq_num": self.cell_seq,
-            "cell_type": self.cell_type.value,
-            "has_output": self.has_output,
-            "no_outputs": self.no_outputs,
-            "output_contains_graphics": self.output_contains_graphics,
-            "output_contains_tables": self.output_contains_tables,
-            "has_interactive": self.has_interactive,
-            "has_heading": self.has_heading,
-            "has_links": self.has_links,
-            "has_math_latex": self.has_math_latex,
-            "code_lines": self.code_lines,
-            "num_h1": self.num_h1,
-            "num_h2": self.num_h2,
-            "num_h3": self.num_h3,
-            "num_h4": self.num_h4,
-            "num_h5": self.num_h5,
-            "num_h6": self.num_h6
-        }     
+    # def __dict__(self):
+    #     return {
+    #         "filename": self.filename,
+    #         "cell_seq_num": self.cell_seq,
+    #         "cell_type": self.cell_type.value,
+    #         "has_output": self.has_output,
+    #         "no_outputs": self.no_outputs,
+    #         "output_contains_graphics": self.output_contains_graphics,
+    #         "output_contains_tables": self.output_contains_tables,
+    #         "has_interactive": self.has_interactive,
+    #         "has_heading": self.has_heading,
+    #         "has_links": self.has_links,
+    #         "has_math_latex": self.has_math_latex,
+    #         "code_lines": self.code_lines,
+    #         "num_h1": self.num_h1,
+    #         "num_h2": self.num_h2,
+    #         "num_h3": self.num_h3,
+    #         "num_h4": self.num_h4,
+    #         "num_h5": self.num_h5,
+    #         "num_h6": self.num_h6
+    #     }     
         
