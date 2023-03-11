@@ -3,6 +3,7 @@
 # please ensure that this, the CSV and the serve directory are pointed to correctly.
 # ## imports
 # %%
+import json
 
 from CellMetadata import NotebookCell
 import pandas as pd
@@ -35,14 +36,13 @@ def supify(x):
 
 
 def getHeadings(tree):
-    h1 = tree.xpath('//h1')
-    h2 = tree.xpath('//h2')
-    h3 = tree.xpath('//h3')
-    h4 = tree.xpath('//h4')
-    h5 = tree.xpath('//h5')
-    h6 = tree.xpath('//h6')
-    headingsDict = {'h1': len(h1), 'h2': len(h2), 'h3': len(
-        h3), 'h4': len(h4), 'h5': len(h5), 'h6': len(h6)}
+    h1 = tree.xpath('count(.//h1)')
+    h2 = tree.xpath('count(.//h2)')
+    h3 = tree.xpath('count(.//h3)')
+    h4 = tree.xpath('count(.//h4)')
+    h5 = tree.xpath('count(.//h5)')
+    h6 = tree.xpath('count(.//h6)')
+    headingsDict = {'h1': h1, 'h2': h2, 'h3': h3, 'h4': h4, 'h5': h5, 'h6': h6}
     return headingsDict
 
 # get the cells from the notebook The following class structure for each cell: Classes (jp-Cell jp-CodeCell jp-Notebook-cell) give both the Input code cell and output code cell in a nesting under it
@@ -84,12 +84,12 @@ def getCellsFromRaw(row):
         notebookCell.num_h5 = headings['h5']
         notebookCell.num_h6 = headings['h6']
         # has_links is true if any of the nodes has a link
-        numLinks = len(cell.xpath('.//a'))
+        numLinks = cell.xpath('count(.//a)')
         notebookCell.has_links =  numLinks > 0
         notebookCell.num_links = numLinks
         # has_tables is true if the cell has tables.
         tables = cell.xpath('.//table')
-        numTables = len(tables)
+        numTables = cell.xpath('count(.//table)')
         notebookCell.has_tables = numTables > 0
         tableMetadataList = []
         # print(f"processing {len(tables)} tables")
@@ -113,7 +113,7 @@ def getCellsFromRaw(row):
             # tableMetadata['is_uniform'] = isTableUniform
             tableMetadataList.append(tableMetadata)
         notebookCell.num_tables = numTables
-        notebookCell.table_metadata = tableMetadataList
+        notebookCell.table_metadata = json.dumps(tableMetadataList)
         numMath = len(cell.cssselect('.MathJax_Preview'))
         notebookCell.has_math = numMath > 0
         notebookCell.num_math = numMath

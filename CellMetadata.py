@@ -1,12 +1,13 @@
+import json
 
-
+import re
 
 
 class NotebookCell(object):
     cell_seq_num = 0
     fileNameState = ''
 
-    cell_execution_order = None
+    cell_execution_order = "not implemented"
     cellType = None
 
     def __init__(self, filename,cellType):
@@ -37,6 +38,9 @@ class NotebookCell(object):
         self._num_h4 = 0
         self._num_h5 = 0
         self._num_h6 = 0
+        self._num_tables = 0
+        self._num_links = 0
+        self._table_metadata = {}
 
     @property
     def cell_type(self):
@@ -170,36 +174,55 @@ class NotebookCell(object):
     def num_h1(self, value):
         self._num_h1 = value
 
-        @property
-        def num_h2(self):
-            return self._num_h2
-        @num_h2.setter
-        def num_h2(self, value):
-            self._num_h2 = value
-            @property
-            def num_h3(self):
-                return self._num_h3
-            @num_h3.setter
-            def num_h3(self, value):
-                self._num_h3 = value
-            @property
-            def num_h4(self):
-                return self._num_h4
-            @num_h4.setter
-            def num_h4(self, value):
-                self._num_h4 = value
-            @property
-            def num_h5(self):
-                return self._num_h5
-            @self.num_h5.setter
-            def num_h5(self, value):
-                self._num_h5 = value
-            @property
-            def num_h6(self):
-                return self._num_h6
-            @num_h6.setter
-            def num_h6(self, value):
-                self._num_h6 = value
+    @property
+    def num_h2(self):
+        return self._num_h2
+    @num_h2.setter
+    def num_h2(self, value):
+        self._num_h2 = value
+    @property
+    def num_h3(self):
+        return self._num_h3
+    @num_h3.setter
+    def num_h3(self, value):
+        self._num_h3 = value
+    @property
+    def num_h4(self):
+        return self._num_h4
+    @num_h4.setter
+    def num_h4(self, value):
+        self._num_h4 = value
+    @property
+    def num_h5(self):
+        return self._num_h5
+    @num_h5.setter
+    def num_h5(self, value):
+        self._num_h5 = value
+    @property
+    def num_h6(self):
+        return self._num_h6
+    @num_h6.setter
+    def num_h6(self, value):
+        self._num_h6 = value
+    @property
+    def num_tables(self):
+        return self._num_tables
+    @num_tables.setter    
+    def num_tables(self, value):
+        return self._num_tables
+    @property
+    def table_metadata(self):
+        return json.dumps(self._table_metadata)
+    @table_metadata.setter
+    def table_metadata(self, value):
+        self._table_metadata = value
+    @property
+    def num_links(self):
+        return self._num_links
+    @num_links.setter    
+    def num_links(self, value):
+        self._num_links = value
+    
 
     # def __dict__(self):
     #     return {
