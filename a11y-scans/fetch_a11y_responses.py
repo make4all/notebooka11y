@@ -13,7 +13,7 @@ Items to want:
 3. What is the distribution of errors per template?
 """
 
-BASE_URL = 'https://a11y-api.sudheesh.info/'
+BASE_URL = 'http://localhost:3000/'
 
 
 def obtain_tasks():
@@ -24,7 +24,7 @@ def obtain_tasks():
 
 
 def get_task_information(task_item):
-    SERVICE_URL = f"https://a11y-api.sudheesh.info/tasks/{task_item['id']}/results?full=True"
+    SERVICE_URL = f"https://localhost:3000/tasks/{task_item['id']}/results?full=True"
     response = requests.get(SERVICE_URL)
     return convert_result(task_item, response.json())
 

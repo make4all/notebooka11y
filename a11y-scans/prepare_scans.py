@@ -6,7 +6,7 @@ import requests
 
 from lxml import etree
 
-BASE_URI = 'https://venkyvm.sudheesh.info/'
+BASE_URI = 'http://localhost:8080/'
 
 
 def get_links_from_page(url):
@@ -36,7 +36,7 @@ def create_scanner_input_list():
 
 
 def create_scan_task(url):
-    SERVICE_URI = "https://a11y-api.sudheesh.info/"
+    SERVICE_URI = "http://localhost:3000/"
     endpoint = "tasks"
     uri = urlparse(url)
     path_elements = uri.path.split('/')
@@ -52,7 +52,7 @@ def create_scan_task(url):
 
 
 def run_task(taskid):
-    SERVICE_URI = f"https://a11y-api.sudheesh.info/tasks/{taskid}/run"
+    SERVICE_URI = f"http://localhost:3000/tasks/{taskid}/run"
     resp = requests.post(SERVICE_URI, None)
     return resp.status_code
 
@@ -64,7 +64,8 @@ def run_tasks(task_list):
 
 
 if __name__ == '__main__':
-    # create_scanner_input_list()
+    create_scanner_input_list()
+
     counter = 0
     with open('a11y-scans/scan-requests.csv', 'r') as f:
         data = f.readlines()
@@ -78,5 +79,4 @@ if __name__ == '__main__':
         task_ids.append(id)
 
     run_tasks(task_list=task_ids)
-
 

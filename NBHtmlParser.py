@@ -129,16 +129,17 @@ def getCellsFromRaw(row):
 # get a list of
 # %%
 # load the csv into a dataframe
-processedDf = pd.read_csv('nb_processed.csv')
+processedDf = pd.read_csv('nb_subplots.csv')
 # %%
 # %% [markdown]
 # # load the text file into a pandas dataframe
 # %%
 fnames = []
-with open("data-1k/sample-1000.txt") as f:
+with open("sample-10000.txt") as f:
     for line in f:
         fnames.append(line.strip())
 # load fnames into a pandas dataframe with column "fileNames"
+print("Completed reading the data frame ...")
 df = pd.DataFrame(fnames, columns=["fileNames"])
 validFiles = df.dropna()
 # %% [markdown]
