@@ -13,6 +13,9 @@ import numpy as np
 import pandas as pd
 import pypandoc
 import re
+import multiprocessing as mp
+import swifter
+
 # import pyspark
 # from pyspark.sql import *
 # from pyspark.sql.functions import *
@@ -25,6 +28,9 @@ logger = logging.getLogger()
 
 logger.setLevel(logging.DEBUG)
 text = ''
+
+BASE_DATA_DIR='data-100k/'
+
 # initialize spark
 # Let's initialize the Spark context.
 # create the session
@@ -147,7 +153,7 @@ def fileToNbNode(x):
     a = None
     try:
         # print("loading file: data-1k/" + x)
-        a = nbformat.read("data-1k/" + x, as_version=4)
+        a = nbformat.read(f'{BASE_DATA_DIR}' + x, as_version=4)
     except Exception as e:
         # print(x)
         logger.exception("Exception occurred for file '"+ x + "': "+ repr(e))
@@ -160,7 +166,7 @@ def storeBase64(row):
     for image in row['images']:
         imageFileName = row['fileNames'] + "-"+str(i)+".png" 
         try:
-            with open("data-1k/base64Images/"+imageFileName, "w") as f:
+            with open(f"{BASE_DATA_DIR}/base64Images/"+imageFileName, "w") as f:
                 f.write(image)
         except Exception as     e:
             logger.exception("Exception occurred for file '"+ imageFileName + "': "+ repr(e))
@@ -191,14 +197,12 @@ def getPlainText(textColumn):
 # %% [markdown]
 # # load the text file into a pandas dataframe
 # %%
-fnames = []
-with open("data-1k/sample-1000.txt") as f:
-    for line in f:
-        fnames.append(line.strip())
 # load fnames into a pandas dataframe with column "fileNames"
-df = pd.DataFrame(fnames, columns=["fileNames"])
+df = pd.read_csv('sample-100000.csv', names=['fileNames'])
+
+# df = pd.DataFrame(fnames, columns=["fileNames"])
 validFiles = df.dropna()
-# print("number of valid files")
+print(f"number of valid files: {validFiles.shape}")
 
 # fnames = pd.read_csv("data-1k/sample-1000.txt", sep="\n", header=None, names=["fileNames"])
 
@@ -206,16 +210,17 @@ validFiles = df.dropna()
 # prevent truncation when printing
 
 # for each fileName in df, load it using nbformat and store it in a new column "raw"
-df['raw'] = df['fileNames'].apply(lambda x: fileToNbNode(x))
+print('Processing file to nbNode conversions')
+df['raw'] = df['fileNames'].swifter.apply(lambda x: fileToNbNode(x))
 validFiles = df.dropna()
 logger.info("number of valid files")
 logger.info(validFiles.count())
 # validFiles.set_option('display.width', 999)
 pd.options.display.max_colwidth = 999
-# print(validFiles.count())
+print(validFiles.count())
 
 # now get the kernel type and language for each file and store it in the "language" column of this dataframe.
-validFiles['language'] = validFiles['raw'].apply(lambda x: getLanguage(x) )
+validFiles['language'] = validFiles['raw'].swifter.apply(lambda x: getLanguage(x) )
 print(f'Shape of validfiles with lambda: {validFiles.shape}')
 # logger.info(validFiles[['fileNames','language']].head(20))
 validFiles= validFiles.dropna()
@@ -224,23 +229,23 @@ print(f'Validfiles with drop na : {validFiles.shape}')
 validFiles = validFiles[validFiles['language'].str.contains('py')]
 print(f'Validfiles with language filter: {validFiles.shape}')
 # Get the list of imports
-validFiles['imports'] = validFiles.apply(lambda nb: getSourceCodeAndExtractImports(nb), axis=1)
+validFiles['imports'] = validFiles.swifter.apply(lambda nb: getSourceCodeAndExtractImports(nb), axis=1)
 print(validFiles.head(50))
 # languageGroups = validFiles.groupby('language').count()
 # logger.info(languageGroups.head(10))
 logger.info(" number of files after dropping values with no language_info is")
 logger.info(validFiles.count())
 
-validFiles['source'] = validFiles['raw'].apply(lambda x: getSourceFromCells(x))
-validFiles['output'] = validFiles['raw'].apply(lambda x: getOutputFromCells(x))
+validFiles['source'] = validFiles['raw'].swifter.apply(lambda x: getSourceFromCells(x))
+validFiles['output'] = validFiles['raw'].swifter.apply(lambda x: getOutputFromCells(x))
 validFiles= validFiles.dropna()
 logger.info("valid files with code cells with outputs")
 logger.info(validFiles.count())
-validFiles['images'] = validFiles['raw'].apply(lambda x: getBase64FromCells(x))
+validFiles['images'] = validFiles['raw'].swifter.apply(lambda x: getBase64FromCells(x))
 validFiles = validFiles.dropna()
 logger.info("valid files with base64 image outputs")
 logger.info(validFiles.count())
-validFiles['numImages'] = validFiles['images'].apply(lambda x: len(x))
+validFiles['numImages'] = validFiles['images'].swifter.apply(lambda x: len(x))
 logger.info("sum of numImages column")
 logger.info(validFiles['numImages'].sum())
 
@@ -253,9 +258,9 @@ logger.info(validFiles[['fileNames','language','numImages']].head(5))
 # # prepare text for LDA
 
 # %%
-validFiles['text'] = validFiles['raw'].apply(lambda x: getTextFromCells(x))
+validFiles['text'] = validFiles['raw'].swifter.apply(lambda x: getTextFromCells(x))
 validText = validFiles.dropna()
-validText = validText['text'].apply(lambda x: getPlainText(x))
+validText = validText['text'].swifter.apply(lambda x: getPlainText(x))
 logger.info("files with parsable markdown text  ")
 logger.info(validText.count())
 # validText = validText.dropna()
@@ -273,9 +278,9 @@ print(len(text))
 fileMaxImages = validFiles[validFiles['numImages'] == validFiles['numImages'].max()]['fileNames'].values[0]
 logger.info("file with the most images is " + fileMaxImages)
 # use pypandoc and convert this notebook into html
-with open("data-1k/"+fileMaxImages, "r") as f:
-    html = pypandoc.convert_file("data-1k/"+fileMaxImages, 'html', format='ipynb')
-    with open("data-1k/"+fileMaxImages+".html", "w") as fh:
+with open(f"{BASE_DATA_DIR}"+fileMaxImages, "r") as f:
+    html = pypandoc.convert_file(f"{BASE_DATA_DIR}"+fileMaxImages, 'html', format='ipynb')
+    with open(f"{BASE_DATA_DIR}"+fileMaxImages+".html", "w") as fh:
         fh.write(html)
 
 # %% [markdown]
