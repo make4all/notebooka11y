@@ -45,17 +45,24 @@ BASE_DATA_DIR='data-100k/'
 def getLanguage(x):
     language = None
     # x = row.raw
-    if 'kernelspec' in x['metadata'].keys() :
-        language = x['metadata']['kernelspec']['name']
-    elif 'language_info' in x['metadata'].keys():
-        language = x['metadata']['language_info']['name']
-    else:
-        logger.exception("kernelspec and language_info keys not present in metadata. printing metadata entry for notebook")
-        logger.error(x['metadata'])
-        language = None
+    if 'metadata' in x:
+        if 'kernelspec' in x['metadata'].keys():
+            y = x['metadata']['kernelspec']
+            if 'name' in y:
+                language = y['name']
+        elif 'language_info' in x['metadata'].keys():
+            y = x['metadata']['language_info']
+            if 'name' in y:
+                language = y['name']
+        else:
+            logger.exception("kernelspec and language_info keys not present in metadata. printing metadata entry for notebook")
+            logger.error(x['metadata'])
+            language = None
     return language    
 # get code cells with images and plots
 def getSourceFromCells(x):
+    if 'cells' not in x:
+        return []
     cells = x['cells']
     codeCells = []
     for cell in cells:
@@ -146,7 +153,7 @@ def getBase64FromCells(x):
             #codeCells.append(cell)
     
     if len(base64Images) == 0:
-        base64Images = None
+        base64Images = []
     return base64Images
 
 def fileToNbNode(x):
@@ -175,6 +182,8 @@ def storeBase64(row):
 # get text from the raw column and store it in a new column 'text'.
 def getTextFromCells(raw):
     text = ''
+    if 'cells' not in raw:
+        return None
     for cell in raw['cells']:
         if cell['cell_type'] == 'markdown':
             text += cell['source']
@@ -221,7 +230,7 @@ print(validFiles.count())
 
 # now get the kernel type and language for each file and store it in the "language" column of this dataframe.
 validFiles['language'] = validFiles['raw'].swifter.apply(lambda x: getLanguage(x) )
-print(f'Shape of validfiles with lambda: {validFiles.shape}')
+print(f'Language assigned: Shape of validfiles with lambda: {validFiles.shape}')
 # logger.info(validFiles[['fileNames','language']].head(20))
 validFiles= validFiles.dropna()
 print(f'Validfiles with drop na : {validFiles.shape}')
@@ -237,12 +246,16 @@ logger.info(" number of files after dropping values with no language_info is")
 logger.info(validFiles.count())
 
 validFiles['source'] = validFiles['raw'].swifter.apply(lambda x: getSourceFromCells(x))
+logger.info("number of files after source column is made")
+logger.info(validFiles.count())
 validFiles['output'] = validFiles['raw'].swifter.apply(lambda x: getOutputFromCells(x))
-validFiles= validFiles.dropna()
+logger.info('number of files after output column is made')
+logger.info(validFiles.count())
+# validFiles= validFiles.dropna()
 logger.info("valid files with code cells with outputs")
 logger.info(validFiles.count())
 validFiles['images'] = validFiles['raw'].swifter.apply(lambda x: getBase64FromCells(x))
-validFiles = validFiles.dropna()
+# validFiles = validFiles.dropna()
 logger.info("valid files with base64 image outputs")
 logger.info(validFiles.count())
 validFiles['numImages'] = validFiles['images'].swifter.apply(lambda x: len(x))
@@ -253,43 +266,43 @@ logger.info(validFiles[['fileNames','language','numImages']].head(5))
 # %% [markdown]
 # convert each of these base64 images into pngs and store them on disc
 # %%
-# validFiles = validFiles.apply(lambda x: storeBase64(x), axis=1)
+# validFiles = validFiles.swifter.apply(lambda x: storeBase64(x), axis=1)
 # %% [markdown]
 # # prepare text for LDA
 
 # %%
-validFiles['text'] = validFiles['raw'].swifter.apply(lambda x: getTextFromCells(x))
-validText = validFiles.dropna()
-validText = validText['text'].swifter.apply(lambda x: getPlainText(x))
-logger.info("files with parsable markdown text  ")
-logger.info(validText.count())
+# validFiles['text'] = validFiles['raw'].swifter.apply(lambda x: getTextFromCells(x))
+# validText = validFiles.dropna()
+# validText = validText['text'].swifter.apply(lambda x: getPlainText(x))
+# logger.info("files with parsable markdown text  ")
+# logger.info(validText.count())
 # validText = validText.dropna()
 # %%
 
-text.translate(str.maketrans('', '', string.punctuation))
-text =  re.sub('[,\.!?%=+-/#$:;]', '', text)
-print(len(text))
+# text.translate(str.maketrans('', '', string.punctuation))
+# text =  re.sub('[,\.!?%=+-/#$:;]', '', text)
+# print(len(text))
 # %% [markdown]
 # # get notebooks with the most number of images
 
 # This is to test if pa11y can catch visualization inaccessibility errors
 #%%
 # get the file name of the notebook with the most numImages
-fileMaxImages = validFiles[validFiles['numImages'] == validFiles['numImages'].max()]['fileNames'].values[0]
-logger.info("file with the most images is " + fileMaxImages)
+# fileMaxImages = validFiles[validFiles['numImages'] == validFiles['numImages'].max()]['fileNames'].values[0]
+# logger.info("file with the most images is " + fileMaxImages)
 # use pypandoc and convert this notebook into html
-with open(f"{BASE_DATA_DIR}"+fileMaxImages, "r") as f:
-    html = pypandoc.convert_file(f"{BASE_DATA_DIR}"+fileMaxImages, 'html', format='ipynb')
-    with open(f"{BASE_DATA_DIR}"+fileMaxImages+".html", "w") as fh:
-        fh.write(html)
+# with open(f"{BASE_DATA_DIR}"+fileMaxImages, "r") as f:
+#     html = pypandoc.convert_file(f"{BASE_DATA_DIR}"+fileMaxImages, 'html', format='ipynb')
+#     with open(f"{BASE_DATA_DIR}"+fileMaxImages+".html", "w") as fh:
+#         fh.write(html)
 
 # %% [markdown]
 # # cleanup and save.
 # %%
-validFiles = validFiles.drop(['raw', 'source', 'output', 'images','text'], axis=1)
-validFiles.to_csv('nb_processed.csv', header=True, index=False)
+validFiles = validFiles.drop(['raw', 'source', 'output', 'images'], axis=1)
+validFiles.to_csv('nb_processed_nodrop_images.csv', header=True, index=False)
 # write text into a text file
-with open('nbText.txt', 'w') as f:
-    f.write(text)
+# with open('nbText.txt', 'w') as f:
+#     f.write(text)
 # validFilesRdd = spark.createDataFrame(validFiles).rdd
 # logger.info(validFilesRdd.show())

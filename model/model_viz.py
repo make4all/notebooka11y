@@ -8,11 +8,22 @@ Original file is located at
 """
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
+import argparse
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--chunk', dest='chunk', type=int, help='Device and Chunk ID')
+args = parser.parse_args()
+
+print ('Attempting to use CUDA GPU ', args.chunk)
+chunk = args.chunk
+
+
 from torchvision import models
 from PIL import Image
 import torch.nn as  nn
 import torch
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device(f"cuda:{chunk}" if torch.cuda.is_available() else "cpu")
 import torchvision.transforms as standard_transforms
 import os
 import base64
@@ -74,12 +85,33 @@ def fig_classification(fig_class_model_path):
         standard_transforms.Normalize(*mean_std)         ])
     return fig_model, fig_class_trasform
 
+
+def divide_chunks(l, n):
+    segments = []
+    for i in range(0, len(l), n):
+        segments.append(l[i:i+n])
+    return segments
+
 # model weight, file 'epoch_9_loss_0.04706_testAcc_0.96867_X_resnext101_docSeg.pth' needs to be uploaded before run
 fig_model, fig_class_trasform = fig_classification('model/epoch_9_loss_0.04706_testAcc_0.96867_X_resnext101_docSeg.pth')
 
-image_dir = 'data-10k/base64Images/' # change path to a directory where you keep inputs
+image_dir = 'data-100k/base64Images/' # change path to a directory where you keep inputs
 image_paths = os.listdir(image_dir)
 image_paths = [os.path.join(image_dir, p) for p in image_paths]
+
+image_paths.sort()
+
+# Check if there are any existing files
+# pending_df = pd.read_csv('pending_files.csv')
+# pending_files = pending_df['Filename'].tolist()
+
+# image_paths = pending_files
+# image_paths.sort()
+
+print(f'Fetching information from {len(image_paths)}')
+
+# image_paths = divide_chunks(image_paths, 22000)
+# image_paths = image_paths[chunk]
 
 classifications = []
 failed = []
@@ -101,10 +133,11 @@ def classify(img_path):
         print(classification, img_path, fig_prediction)
         return classification, None
     except Exception as e:
+        print('Failed with exception: ', e)
         return None, img_path
 
 
-with ThreadPoolExecutor() as executor:
+with ThreadPoolExecutor(max_workers=2) as executor:
     for classification, fail in executor.map(classify, image_paths):
         classifications.append(classification)
         failed.append(fail)
@@ -117,7 +150,7 @@ df = pd.DataFrame([[n[0], n[0].split('.ipynb')[0], n[1]] for n in classification
 # print(classifications[:10][0][0])
 
 print(df)
-df.to_csv('model-results.csv', header=True, index=False)
+df.to_csv(f'model-results-{chunk}.csv', header=True, index=False)
 
 """### Summary of distributions of number of plots"""
 
@@ -146,7 +179,7 @@ cdf_chart = alt.Chart(df_cdf).mark_line().encode(
     height=500, 
     width=700
 )
-cdf_chart.save('model/summary-10k/generated-cdf.html')
+cdf_chart.save(f'model/summary-100k/generated-cdf-{chunk}.html')
 
 """### Visualization for counts of different category
 
@@ -177,4 +210,4 @@ text = bars.mark_text(
 )
 
 chart = (bars + text).properties(height=1000, width=700)
-chart.save('model/summary-10k/type_of_charts.html')
+chart.save(f'model/summary-100k/type_of_charts-{chunk}.html')

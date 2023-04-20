@@ -3,24 +3,26 @@
 # please ensure that this, the CSV and the serve directory are pointed to correctly.
 # ## imports
 # %%
+import glob
 import json
 
 from CellMetadata import NotebookCell
 import pandas as pd
+import swifter
 # from bs4 import BeautifulSoup
 # from lxml import etree
 from lxml import html
-absolutePath = 'serve/light/'
+absoluteHTMLPath = 'serve/light/'
 # %% [markdown]
 # ## lambdas
 # %%
 # get bs4 objects for each notebook and store them in the df
 
 
-def supify(x):
+def supify(fname):
     global absolutePath
     # replace .ipynb with .html
-    fname = absolutePath + x.replace('.ipynb', '.html')
+    # fname = absolutePath + x.replace('.ipynb', '.html')
 
     soup = None
     try:
@@ -30,7 +32,8 @@ def supify(x):
         # print(e)
         # print(fname)
         pass
-    return soup
+    return getCellsFromRaw(fname, soup)
+    # return soup
 
 # get the number of h1, h2, h3, h4, h5 and h6
 
@@ -48,9 +51,11 @@ def getHeadings(tree):
 # get the cells from the notebook The following class structure for each cell: Classes (jp-Cell jp-CodeCell jp-Notebook-cell) give both the Input code cell and output code cell in a nesting under it
 
 
-def getCellsFromRaw(row):
+def getCellsFromRaw(fname, raw):
     # tree = raw
-    raw = row['raw']
+    # raw = row['raw']
+    if raw is None:
+        return None
 
     notebookCells = []
     # find all cells that have jp-cell and jp-notebookcell and other classes
@@ -70,7 +75,7 @@ def getCellsFromRaw(row):
             cellType = 'markdown'
             # print(f"creating cellType: {cellType}")
             # print(f"class for cell {list(cell.classes)}")
-        notebookCell = NotebookCell(row['fileNames'], cellType)
+        notebookCell = NotebookCell(fname, cellType)
         if 'jp-mod-noOutputs' in cellClass or cellType == 'markdown':
             notebookCell.has_output= False
         headings = getHeadings(cell)
@@ -129,34 +134,37 @@ def getCellsFromRaw(row):
 # get a list of
 # %%
 # load the csv into a dataframe
-processedDf = pd.read_csv('nb_subplots.csv')
+# processedDf = pd.read_csv('nb_subplots.csv')
 # %%
 # %% [markdown]
 # # load the text file into a pandas dataframe
 # %%
-fnames = []
-with open("sample-10000.txt") as f:
-    for line in f:
-        fnames.append(line.strip())
-# load fnames into a pandas dataframe with column "fileNames"
-print("Completed reading the data frame ...")
-df = pd.DataFrame(fnames, columns=["fileNames"])
+# fnames = []
+# with open("sample-10000.txt") as f:
+#     for line in f:
+#         fnames.append(line.strip())
+# # load fnames into a pandas dataframe with column "fileNames"
+# print("Completed reading the data frame ...")
+fnames = glob.glob(f'{absoluteHTMLPath}/*.html')
+df = pd.DataFrame(fnames,columns=['fileNames'])
+print(f"shape of df is {df.shape}")
+# df = df.sample(n=100)
 validFiles = df.dropna()
+
 # %% [markdown]
 # ## parse using lxml
 # %%
-validFiles['raw'] = validFiles['fileNames'].apply(lambda x: supify(x))
+validFiles['cells'] = validFiles['fileNames'].swifter.apply(lambda x: supify(x))
 validFiles = validFiles.dropna()
 print("valid files with lxml html nodes: ", validFiles.shape)
 # print(validFiles.head())
-# validFiles['headings'] = validFiles['raw'].apply(lambda x: getHeadings(x))
+# validFiles['headings'] = validFiles['raw'].swifter.apply(lambda x: getHeadings(x))
 # %% [markdown]
 # ## parse each cell.
 # %%
-validFiles['codeCellsWithOutput'] = validFiles.apply(
-    lambda x: getCellsFromRaw(x), axis=1)
+# validFiles['cells'] = validFiles.swifter.apply(lambda x: getCellsFromRaw(x), axis=1)
 
-validFiles = validFiles.dropna()
+# validFiles = validFiles.dropna()
 print("valid files after getting cells ", validFiles.shape)
 # %% [markdown]
 # ## explode DF, drop, and save
@@ -164,16 +172,16 @@ print("valid files after getting cells ", validFiles.shape)
 # ### add rows to validFiles.
 # each row should contain one cell
 # %%
-validFiles = validFiles.drop(columns=['raw'])
-validFiles = validFiles.explode('codeCellsWithOutput',True)
+# validFiles = validFiles.drop(columns=['raw'])
+validFiles = validFiles.explode('cells',True)
 validFiles = validFiles.dropna()
 print("validFiles after creating a cell for each row: ", validFiles.shape)
 # print(validFiles.head())
 # %% [markdown]
 # #### expand NotebookCell objects
 # %%
-vf1 = validFiles.drop(['codeCellsWithOutput'], axis=1)
-vf2 = validFiles['codeCellsWithOutput'].apply(pd.Series)
+vf1 = validFiles.drop(['cells'], axis=1)
+vf2 = validFiles['cells'].swifter.apply(pd.Series)
 validFiles = pd.concat([vf1, vf2], axis=1)
 print("validFiles after expanding noteBookCells ",validFiles.shape)
 print(validFiles.head())
