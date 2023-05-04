@@ -21,7 +21,7 @@ import swifter
 # from pyspark.sql.functions import *
 # from pyspark import SparkContext, SparkConf
 # Create and configure logger
-logging.basicConfig(filename="log/processNotebooks.log", filemode='w')
+logging.basicConfig(filename="log/processNotebooks-subplots.log", filemode='w')
 # Creating an object
 logger = logging.getLogger()
 # Setting the threshold of logger to DEBUG
@@ -58,7 +58,8 @@ def getLanguage(x):
             logger.exception("kernelspec and language_info keys not present in metadata. printing metadata entry for notebook")
             logger.error(x['metadata'])
             language = None
-    return language    
+    return language
+
 # get code cells with images and plots
 def getSourceFromCells(x):
     if 'cells' not in x:
@@ -155,6 +156,64 @@ def getBase64FromCells(x):
     if len(base64Images) == 0:
         base64Images = []
     return base64Images
+
+def hasMatplotlib(line: "str"):
+    if line.strip().startswith("#"):
+        return False
+
+    # fr matplotlib
+    if '.subplots(' in line:
+        return True
+    
+    return False
+
+
+def hasBokeh(line: "str"):
+    if line.strip().startswith("#"):
+        return False
+
+    # for bokeh
+    if 'gridplot' in line:
+        return True
+    if 'column(' in line:
+        return True
+    if 'row(' in line:
+        return True
+    if 'layout(' in line:
+        return True
+    
+    return False
+
+
+def hasPlotly(line: "str"):
+    if line.strip().startswith("#"):
+        return False
+    
+    # for plotly
+    if 'facet_' in line: 
+        return True
+    
+    return False
+
+
+def count_factory(check):
+    def fn(row):
+        filename = row['fileNames']
+        data = row['raw']
+        cells = data['cells']
+        count = 0
+        for cell in cells:
+            if cell['cell_type'] == 'code':
+                src = cell['source']
+                try:
+                    for line in src.split('\n'):
+                        if check(line):
+                            count += 1
+                except:
+                    pass
+            
+        return count
+    return fn
 
 def fileToNbNode(x):
     a = None

@@ -1,11 +1,12 @@
 from collections import defaultdict
 import csv
 
-# import pandas
-import modin.pandas as pd
+import pandas as pd
+# import modin.pandas as pd
 import swifter
 import numpy
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import json
 
 def cdf(data, sort_needed=True):
@@ -47,18 +48,28 @@ def plot_aggregate_errors_and_warnings(df):
         'material-darker': '#5aa9a2',
         'solarized': '#5ea5c5',
     }
-    fig, ax = plt.subplots(nrows=1, ncols=1)
+    import matplotlib
+    matplotlib.rcParams.update({'font.size': 20})
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 8))
     for plot_type, result_dict in [('error', error_results), ('warning', warning_results)]:
         for theme, arr in result_dict.items():
             theme_color = theme_style[theme]
             line_style = plot_line_style[plot_type]
             X, Y = cdf(arr, sort_needed=True)
-            ax.plot(X, Y, label=f'{theme}', linestyle=line_style, color=theme_color)
-    ax.set_xlabel('Number of Warnings / Errors related to Accessibility')
-    ax.set_ylabel('CDF of warnings/errors')
+            ax.plot(X, Y, label=f'{theme}', linestyle=line_style, linewidth=4, color=theme_color)
+    ax.set_xlabel('Number of Warnings / Errors related to Accessibility', fontsize=18)
+    ax.set_ylabel('CDF of warnings/errors', fontsize=18)
     ax.set_xscale('log')
-    ax.legend()
-    plt.savefig('warnings_errors.pdf', bbox_inches='tight')
+    line_labels = [k for k, c in theme_style.items()]
+    custom_lines = [Line2D([0], [0], color=c) for k, c in theme_style.items()]
+    agg_label_lines = [Line2D([1], [1], linestyle=l) for k, l in plot_line_style.items()]
+    agg_labels = [k for k, c in plot_line_style.items()]
+    l1 = ax.legend(custom_lines, line_labels, loc=2, fancybox=True, fontsize='large')
+    l2 = ax.legend(agg_label_lines, agg_labels, loc=4, fontsize='large')
+
+    ax.add_artist(l1)
+    ax.add_artist(l2)
+    plt.savefig('submission-figures/warnings_errors.pdf', bbox_inches='tight')
 
 
 def analyseErrors(input_dataframe_filepath='a11y-detailed-result.csv'):
@@ -228,9 +239,9 @@ def analyseErrors(input_dataframe_filepath='a11y-detailed-result.csv'):
 
 
 if __name__ == '__main__':
-    # df = read_aggregate_information()
+    df = read_aggregate_information()
     # ddf = read_detailed_information()
     # ddf = ddf.sample(n=500)
-    analyseErrors()
-    # plot_aggregate_errors_and_warnings(df)
+    # analyseErrors()
+    plot_aggregate_errors_and_warnings(df)
 

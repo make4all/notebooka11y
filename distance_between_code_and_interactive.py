@@ -6,9 +6,12 @@ df = pandas.read_csv('nb_processed_cell_html.csv')
 notebook_files = list(set(df['fileNames'].tolist()))
 
 distance_to_first_interactive_heading_or_table = defaultdict(list)
-
-for filename in notebook_files:
+# question -- why are we doing this?
+for i, filename in enumerate(notebook_files):
+    if i%10000:
+        print(f"Processing {i} of {len(notebook_files)}")
     sel_df = df[df['fileNames'] == filename]
+    # print("cell_df created")
     for index, row in sel_df.iterrows():
         seq_num = row['cell_seq_num']
         cell_type = row['cellType']

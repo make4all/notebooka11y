@@ -45,7 +45,27 @@ def getHeadings(tree):
     h4 = tree.xpath('count(.//h4)')
     h5 = tree.xpath('count(.//h5)')
     h6 = tree.xpath('count(.//h6)')
-    headingsDict = {'h1': h1, 'h2': h2, 'h3': h3, 'h4': h4, 'h5': h5, 'h6': h6}
+
+    h1_texts = tree.xpath('.//h1/text()')
+    h2_texts = tree.xpath('.//h2/text()')
+    h3_texts = tree.xpath('.//h3/text()')
+    h4_texts = tree.xpath('.//h4/text()')
+    h5_texts = tree.xpath('.//h5/text()')
+    h6_texts = tree.xpath('.//h6/text()')
+    headingsDict = {
+            'h1': h1,
+            'h2': h2,
+            'h3': h3,
+            'h4': h4,
+            'h5': h5,
+            'h6': h6,
+            'h1-texts': json.dumps(h1_texts),
+            'h2-texts': json.dumps(h2_texts),
+            'h3-texts': json.dumps(h3_texts),
+            'h4-texts': json.dumps(h4_texts),
+            'h5-texts': json.dumps(h5_texts),
+            'h6-texts': json.dumps(h6_texts)
+            }
     return headingsDict
 
 # get the cells from the notebook The following class structure for each cell: Classes (jp-Cell jp-CodeCell jp-Notebook-cell) give both the Input code cell and output code cell in a nesting under it
@@ -71,11 +91,19 @@ def getCellsFromRaw(fname, raw):
         if 'jp-mod-noOutputs' in cellClass or 'jp-CodeCell' in cellClass:
             # print("processing cell")
             cellType = 'code'
+            num_code_lines = cell.xpath('count(.//span)') - 1
         if 'jp-MarkdownCell' in cellClass:
             cellType = 'markdown'
             # print(f"creating cellType: {cellType}")
             # print(f"class for cell {list(cell.classes)}")
         notebookCell = NotebookCell(fname, cellType)
+        if cellType == 'code':
+            if 'jp-mod-noOutputs' in cellClass:
+                notebookCell.has_output = False
+            else:
+                notebookCell.has_output = True
+            notebookCell.code_lines = int(num_code_lines)
+
         if 'jp-mod-noOutputs' in cellClass or cellType == 'markdown':
             notebookCell.has_output= False
         headings = getHeadings(cell)
@@ -88,6 +116,13 @@ def getCellsFromRaw(fname, raw):
         notebookCell.num_h4 = headings['h4']
         notebookCell.num_h5 = headings['h5']
         notebookCell.num_h6 = headings['h6']
+        # Get heading texts
+        notebookCell.h1_texts = headings['h1-texts']
+        notebookCell.h2_texts = headings['h2-texts']
+        notebookCell.h3_texts = headings['h3-texts']
+        notebookCell.h4_texts = headings['h4-texts']
+        notebookCell.h5_texts = headings['h5-texts']
+        notebookCell.h6_texts = headings['h6-texts']
         # has_links is true if any of the nodes has a link
         numLinks = cell.xpath('count(.//a)')
         notebookCell.has_links =  numLinks > 0
@@ -120,9 +155,14 @@ def getCellsFromRaw(fname, raw):
         notebookCell.num_tables = numTables
         notebookCell.table_metadata = json.dumps(tableMetadataList)
         numMath = len(cell.cssselect('.MathJax_Preview'))
+        numRenderedImage = len(cell.cssselect('.jp-RenderedImage.jp-OutputArea-output'))
         notebookCell.has_math = numMath > 0
         notebookCell.num_math = numMath
         # todo graphics and has_interactive
+        notebookCell.output_contains_graphics = numRenderedImage > 0
+        # look for img elements and their alt texts
+        alts = cell.xpath('.//img/@alt')
+        notebookCell.alt_text = json.dumps(alts)
 
         notebookCells.append(vars(notebookCell))
         # print("appending")
