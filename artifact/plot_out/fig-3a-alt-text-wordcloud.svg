@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200">
+<style>@font-face{font-family:'Droid Sans Mono';font-weight:normal;font-style:normal;src:url("data:application/font-woff;charset=utf-8;base64,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")format("woff");}</style>
+<style>text{font-family:'Droid Sans Mono';font-weight:normal;font-style:normal;}</style>
+<rect width="100%" height="100%" style="fill:white"></rect>
+<text transform="translate(99,106)" font-size="94" style="fill:rgb(67, 61, 132)">png</text>
+<text transform="translate(52,181)" font-size="72" style="fill:rgb(72, 23, 105)">Open</text>
+<text transform="translate(148,52)" font-size="67" style="fill:rgb(236, 229, 27)">Colab</text>
+<text transform="translate(224,174)" font-size="58" style="fill:rgb(49, 181, 123)">image</text>
+<text transform="translate(40,51)" font-size="40" style="fill:rgb(110, 206, 88)">alt</text>
+<text transform="translate(278,100)" font-size="40" style="fill:rgb(69, 56, 130)">text</text>
+<text transform="translate(271,131)" font-size="36" style="fill:rgb(44, 114, 142)">title</text>
+<text transform="translate(29,158) rotate(-90)" font-size="34" style="fill:rgb(157, 217, 59)">Drawing</text>
+<text transform="translate(33,91)" font-size="30" style="fill:rgb(181, 222, 43)">JPG</text>
+<text transform="translate(143,130)" font-size="26" style="fill:rgb(42, 120, 142)">logo</text>
+<text transform="translate(392,110) rotate(-90)" font-size="23" style="fill:rgb(41, 123, 142)">Sample</text>
+<text transform="translate(200,197)" font-size="22" style="fill:rgb(32, 146, 140)">Screen</text>
+<text transform="translate(44,176) rotate(-90)" font-size="21" style="fill:rgb(246, 230, 32)">Output</text>
+<text transform="translate(78,16)" font-size="20" style="fill:rgb(149, 216, 64)">Python</text>
+<text transform="translate(50,120)" font-size="20" style="fill:rgb(197, 224, 33)">img</text>
+<text transform="translate(306,72)" font-size="20" style="fill:rgb(71, 19, 101)">data</text>
+<text transform="translate(31,64)" font-size="17" style="fill:rgb(70, 10, 93)">Example</text>
+<text transform="translate(127,195)" font-size="16" style="fill:rgb(72, 33, 115)">Commons</text>
+<text transform="translate(38,14)" font-size="16" style="fill:rgb(43, 116, 142)">20at</text>
+<text transform="translate(368,71) rotate(-90)" font-size="16" style="fill:rgb(39, 126, 142)">caption</text>
+<text transform="translate(17,196)" font-size="16" style="fill:rgb(42, 119, 142)">Creative</text>
+<text transform="translate(278,193)" font-size="16" style="fill:rgb(76, 194, 108)">model</text>
+<text transform="translate(104,131) rotate(-90)" font-size="16" style="fill:rgb(108, 205, 90)">label</text>
+<text transform="translate(327,198)" font-size="13" style="fill:rgb(127, 211, 78)">Combined</text>
+<text transform="translate(274,140)" font-size="12" style="fill:rgb(56, 89, 140)">Screenshot</text>
+<text transform="translate(275,97) rotate(-90)" font-size="12" style="fill:rgb(202, 225, 31)">20Shot</text>
+<text transform="translate(253,10)" font-size="12" style="fill:rgb(251, 231, 35)">learning</text>
+<text transform="translate(112,49)" font-size="12" style="fill:rgb(144, 215, 67)">IBM</text>
+<text transform="translate(29,100)" font-size="12" style="fill:rgb(162, 218, 55)">License</text>
+<text transform="translate(100,25)" font-size="12" style="fill:rgb(80, 196, 106)">Figure</text>
+<text transform="translate(163,39)" font-size="12" style="fill:rgb(40, 174, 128)">CNN</text>
+<text transform="translate(156,114)" font-size="12" style="fill:rgb(31, 159, 136)">tree</text>
+<text transform="translate(214,105) rotate(-90)" font-size="12" style="fill:rgb(31, 160, 136)">diagram</text>
+<text transform="translate(372,11)" font-size="12" style="fill:rgb(64, 189, 114)">Dog</text>
+<text transform="translate(254,167) rotate(-90)" font-size="12" style="fill:rgb(52, 97, 141)">Check</text>
+<text transform="translate(91,139)" font-size="12" style="fill:rgb(33, 142, 141)">notebook</text>
+<text transform="translate(220,182)" font-size="11" style="fill:rgb(94, 201, 98)">architecture</text>
+<text transform="translate(218,137)" font-size="11" style="fill:rgb(68, 191, 112)">P</text>
+<text transform="translate(362,183)" font-size="11" style="fill:rgb(178, 221, 45)">20de</text>
+<text transform="translate(158,104) rotate(-90)" font-size="11" style="fill:rgb(52, 96, 141)">Alt_text</text>
+<text transform="translate(351,140)" font-size="11" style="fill:rgb(47, 180, 124)">Network</text>
+<text transform="translate(49,24)" font-size="11" style="fill:rgb(119, 209, 83)">C3</text>
+<text transform="translate(2,181)" font-size="6" style="fill:rgb(71, 14, 97)">crossvalidation</text>
+<text transform="translate(4,7)" font-size="6" style="fill:rgb(67, 62, 133)">jupyter</text>
+<text transform="translate(51,173) rotate(-90)" font-size="6" style="fill:rgb(45, 112, 142)">ADramide</text>
+<text transform="translate(117,36)" font-size="6" style="fill:rgb(72, 27, 109)">20Maslow</text>
+<text transform="translate(216,14)" font-size="6" style="fill:rgb(155, 217, 60)">20del</text>
+<text transform="translate(290,65)" font-size="6" style="fill:rgb(56, 185, 119)">20ML</text>
+<text transform="translate(256,33)" font-size="6" style="fill:rgb(74, 193, 109)">jfif</text>
+<text transform="translate(131,89) rotate(-90)" font-size="6" style="fill:rgb(72, 41, 121)">Human</text>
+<text transform="translate(295,76)" font-size="4" style="fill:rgb(46, 110, 142)">variablesCategoricas_1</text>
+</svg>
