@@ -33,7 +33,19 @@ The various scripts listed here perform the data processing:
 
    > :heavy_check_mark: For the paper, the execution of the pipeline processes 589746 `pa11y` scan results in 59 chunks and takes **2833.13** seconds (46 minutes) to generate the resulting datasets for further analysis on a 72 core vCPU AWS c5.18xlarge instance.
 
-2. `generate_accessibility_error_count.py`
+2. `generate_accessibility_error_counts.py`
+  - This script expects the previous command to be run and uses the outout from the previous stage of the pipeline as its input
+    - For this part of the pipeline, we store the results from the executions in the `data_out` directory.
+    - Input Requirements:
+      - `DETAILED_ERROR_REPORT_FILE`: the file path of output of the previous stage of the pipeline 
+    - The expected outout:
+      - `data_out/errors-different-counts-a11y-analyze-errors-summary.csv` with the structure containing counts of errors that notebooks have across different themes. The file contains in a long table format with the following columns:
+        - Type
+        - Theme
+        - Runner
+        - DetailCode
+        - count
+
 3. `classify_images.py`
    - This script uses the `FV-CNN+FC-CNN` based model (included at `model/epoch_9_loss_0.04706_testAcc_0.96867_X_resnext101_docSeg.pth`) and classifies the images in various notebooks into 28 different categories.
    - The execution of this script requires all the images/plots in the notebooks to be stored in their `base64` file formats in a single directory. (eg. `data-100k/base64Images/`)
