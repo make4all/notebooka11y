@@ -3,6 +3,7 @@ import csv
 import glob
 import json
 import multiprocessing as mp
+import time
 
 from hashlib import sha256
 
@@ -119,6 +120,7 @@ if __name__ == '__main__':
     n = 10000
     task_list_chunks = [task_list[i:i + n] for i in range(0, len(task_list), n)]
 
+    start_time = time.time()
     # Batch-wise process the results from pa11y and write the responses from the parallel threads into the datasets.
     for index, task_list in enumerate(task_list_chunks):
         print(f'Processed Batch {index}/{len(task_list_chunks)}')
@@ -133,3 +135,5 @@ if __name__ == '__main__':
                         wr_fd.writerows(detailed_result)
 
     print('Processing complete')
+    end_time = time.time()
+    print(f'Time Taken: {end_time - start_time} seconds')
