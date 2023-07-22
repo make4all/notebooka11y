@@ -60,3 +60,23 @@ The various scripts listed here perform the data processing:
        - `Category`: A single category classification among the 28 available with the highest prediction accuracy.
    
    > :warning: To analyze `342722` images on multiple GPUs the model can take hours after the dataset is sharded appropriately. Non sharded inference can take over a day. Exercise caution while running this task.
+
+   4. `get_first_interactive_cells.py`
+  - This stage of the pipeline expects the previous step that generates `nb_processed_cell_html.csv` to be run and it uses the file as input.
+  - Running this script generates the file `nb_first_interactive_cell.csv` into the `data_out` directory.
+  - Input requirements:
+    - `nb_processed_cell_html.csv`, the output from the previous stage of the pipeline.
+  - The expected output:
+    - `out_dir/nb_first_interactive_cell.csv` containing the data necessary to identify the first interactive element and its location in each notebook. The file contains the following columns:
+      - Filename: the name of the notebook's html output file.
+      - H: contains the text "Heading" if the notebook contains a heading. Value is None if cell does not contain a heading.
+      - SequenceNumber: the cell sequence number in which this interactive element is present.
+      - HLevel: the level of the heading. If the cell does not contain the heading, this value is None.
+      - T: contains the text 'Table' if the cell contains a table. Value is none if cell does not contain a table.
+      - TSequenceNumber: Cell number in which the table is located. Value is None if the cell does not contain a table.
+      - TDetail: details of the table.
+      
+
+
+
+
