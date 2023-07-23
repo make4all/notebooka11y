@@ -142,28 +142,28 @@ fnames = glob.glob(f'{NOTEBOOKS_HTML_FORMAT}/*.html')
 df = pd.DataFrame(fnames, columns=['fileNames'])
 print(f"Shape of df is {df.shape}")
 
-validFiles = df.dropna()
+valid_files = df.dropna()
 
 start_time = time.time()
 
 # Parse using lxml
-validFiles['cells'] = validFiles['fileNames'].apply(lambda x: supify(x))
-validFiles = validFiles.dropna()
-print("Valid files with lxml html nodes: ", validFiles.shape)
+valid_files['cells'] = valid_files['fileNames'].apply(lambda x: supify(x))
+valid_files = valid_files.dropna()
+print("Valid files with lxml html nodes: ", valid_files.shape)
 
-validFiles = validFiles.explode('cells', True)
-validFiles = validFiles.dropna()
-print("validFiles after creating a cell for each row: ", validFiles.shape)
+valid_files = valid_files.explode('cells', True)
+valid_files = valid_files.dropna()
+print("validFiles after creating a cell for each row: ", valid_files.shape)
 
-vf1 = validFiles.drop(['cells'], axis=1)
-vf2 = validFiles['cells'].apply(pd.Series)
-validFiles = pd.concat([vf1, vf2], axis=1)
-print("validFiles after expanding noteBookCells ", validFiles.shape)
-print(validFiles.head())
-print(validFiles.describe())
+vf1 = valid_files.drop(['cells'], axis=1)
+vf2 = valid_files['cells'].apply(pd.Series)
+valid_files = pd.concat([vf1, vf2], axis=1)
+print("validFiles after expanding noteBookCells ", valid_files.shape)
+print(valid_files.head())
+print(valid_files.describe())
 
 end_time = time.time()
 
 print(f'Time taken to process HTML into dataset: {end_time - start_time} seconds')
 
-validFiles.to_csv(CELL_HTML_DATASET, header=True, index=False)
+valid_files.to_csv(CELL_HTML_DATASET, header=True, index=False)
