@@ -6,7 +6,8 @@ import time
 COLUMN_HEADERS = ['Type', 'Theme', 'Runner', 'DetailCode', 'count']
 DETAILED_ERROR_REPORT_FILE = 'data_out/a11y-detailed-result.csv'
 
-def analyseErrors(input_dataframe_filepath):
+
+def analyse_errors(input_dataframe_filepath):
     notebook_theme_counter = defaultdict(set)
 
     print('Pass 1 - Identifying the correct notebooks to use')
@@ -14,7 +15,7 @@ def analyseErrors(input_dataframe_filepath):
         reader = csv.reader(f)
         header = next(reader)
         for i, line in enumerate(reader):
-            if i % 10000:
+            if i % 10000 == 0:
                 print(f'\tPass 1 - Processed {i} records')
             elements = dict(zip(header, line))
             notebook_name = elements['Notebook']
@@ -29,9 +30,9 @@ def analyseErrors(input_dataframe_filepath):
         reader = csv.reader(f)
         header = next(reader)
         for i, line in enumerate(reader):
-            if i % 10000:
+            if i % 10000 == 0:
                 print(f'Processed {i} records')
-            
+
             elements = dict(zip(header, line))
             id = elements['ID']
             notebook_name = elements['Notebook']
@@ -52,35 +53,38 @@ def analyseErrors(input_dataframe_filepath):
                 theme_error_counter[record_type][theme][runner] = {}
             if detail_code not in theme_error_counter[record_type][theme][runner]:
                 theme_error_counter[record_type][theme][runner][detail_code] = 0
-                
-            # Increment the error count for the specific error
-            theme_error_counter[record_type][theme][runner][detail_code] = theme_error_counter[record_type][theme][runner][detail_code] + 1
 
-    
+            # Increment the error count for the specific error
+            theme_error_counter[record_type][theme][runner][detail_code] = \
+            theme_error_counter[record_type][theme][runner][detail_code] + 1
+
     row_result = []
     for record_type, record_indexed_data in theme_error_counter.items():
-            for theme, theme_indexed_data in record_indexed_data.items():
-                for runner, runner_indexed_data in theme_indexed_data.items():
-                    for detail_code, count in runner_indexed_data.items():
-                        row = [record_type, theme, runner, detail_code, count]
-                        row_result.append(row)
+        for theme, theme_indexed_data in record_indexed_data.items():
+            for runner, runner_indexed_data in theme_indexed_data.items():
+                for detail_code, count in runner_indexed_data.items():
+                    row = [record_type, theme, runner, detail_code, count]
+                    row_result.append(row)
 
     return pd.DataFrame(row_result, columns=COLUMN_HEADERS)
 
-def analyzeSummary(df):
+
+def analyze_summary(df):
     # same as df but sorted
-    df.groupby('DetailCode')\
-        .filter(lambda x: x['count'].nunique() > 1)\
-        .sort_values(by=['Type','Runner','count'], ascending=[True,True, False])\
+    df.groupby('DetailCode') \
+        .filter(lambda x: x['count'].nunique() > 1) \
+        .sort_values(by=['Type', 'Runner', 'count'], ascending=[True, True, False]) \
         .to_csv('data_out/errors-different-counts-a11y-analyze-errors-summary.csv', index=False)
-    print("file write of df with a filter to store errors that have different counts across themes to errors-different-counts-a11y-analyze-errors-summary.csv")
+    print(
+        "file write of df with a filter to store errors that have different counts across themes to "
+        "errors-different-counts-a11y-analyze-errors-summary.csv")
 
 
 if __name__ == "__main__":
     start_time = time.time()
-    
-    df = analyseErrors(input_dataframe_filepath = DETAILED_ERROR_REPORT_FILE)
-    analyzeSummary(df)
+
+    df = analyse_errors(input_dataframe_filepath=DETAILED_ERROR_REPORT_FILE)
+    analyze_summary(df)
 
     print('Processing complete')
     end_time = time.time()

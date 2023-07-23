@@ -2,8 +2,8 @@ import glob
 import json
 import time
 
-from lxml import html
 import pandas as pd
+from lxml import html
 
 from CellMetadata import NotebookCell
 

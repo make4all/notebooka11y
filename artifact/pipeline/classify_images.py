@@ -26,6 +26,8 @@ device = torch.device(f"cuda:{chunk}" if torch.cuda.is_available() else "cpu")
 MODEL_PATH = '../model/epoch_9_loss_0.04706_testAcc_0.96867_X_resnext101_docSeg.pth'
 IMAGE_STORE = 'data-100k/base64Images/'
 
+CLASSIFICATION_RESULT = 'data_out/model-results.csv'
+
 labelNames = ['3D objects',
               'Algorithm',
               'Area chart',
@@ -118,4 +120,4 @@ print(f'Total time taken to classify: {end_time - start_time} seconds')
 df = pd.DataFrame([[n[0], n[0].split('.ipynb')[0], n[1]] for n in classifications if n is not None],
                   columns=['Name', 'NotebookName', 'Category'])
 
-df.to_csv(f'data_out/model-results.csv', header=True, index=False)
+df.to_csv(CLASSIFICATION_RESULT, header=True, index=False)

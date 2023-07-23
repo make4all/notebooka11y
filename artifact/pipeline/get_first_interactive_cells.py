@@ -1,10 +1,9 @@
-import pandas
 from collections import defaultdict
+import pandas
 import time
 
-
-PROCESSED_CELL_DATA = '../../nb_processed_cell_html.csv'
-FIRST_INTERACTIVE_CELL_DATA = '../../vp_temp_output/nb_first_interactive_cell.csv'
+PROCESSED_CELL_DATA = 'data_out/nb_processed_cell_html.csv'
+FIRST_INTERACTIVE_CELL_DATA = 'data_out/nb_first_interactive_cell.csv'
 
 df = pandas.read_csv(PROCESSED_CELL_DATA)
 
@@ -12,14 +11,13 @@ notebook_files = list(set(df['fileNames'].tolist()))
 
 distance_to_first_interactive_heading_or_table = defaultdict(list)
 
-
 start_time = time.time()
 
 for i, filename in enumerate(notebook_files):
-    if i%10000 == 0:
+    if i % 10000 == 0:
         print(f"Processing {i} of {len(notebook_files)}")
     sel_df = df[df['fileNames'] == filename]
-    
+
     for index, row in sel_df.iterrows():
         seq_num = row['cell_seq_num']
         cell_type = row['cellType']
@@ -53,7 +51,7 @@ for i, filename in enumerate(notebook_files):
 
 end_time = time.time()
 
-print(f'Total tiem taken to process data: {end_time - start_time} seconds')
+print(f'Total time taken to process data: {end_time - start_time} seconds')
 
 rows = []
 for filename, sequences in distance_to_first_interactive_heading_or_table.items():
@@ -78,13 +76,12 @@ for filename, sequences in distance_to_first_interactive_heading_or_table.items(
 
     rows.append(row)
 
-
 fwrite_end_time = time.time()
 
 print(f'Time to create output file: {fwrite_end_time - end_time} seconds')
 
-rdf = pandas.DataFrame(data=rows, columns=['Filename', 'H', 'SequenceNumber', 'HLevel', 'T', 'TSequenceNumber', 'TDetail'])
+rdf = pandas.DataFrame(data=rows,
+                       columns=['Filename', 'H', 'SequenceNumber', 'HLevel', 'T', 'TSequenceNumber', 'TDetail'])
 rdf.to_csv(FIRST_INTERACTIVE_CELL_DATA, header=True, index=False)
 
 print(f'Output file written to disk at: {FIRST_INTERACTIVE_CELL_DATA}')
-
