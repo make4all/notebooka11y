@@ -1,0 +1,30 @@
+# Inspired by the github_ci_nbconvert project by Salih Marangoz
+
+name: Process Jupyter Notebooks into HTML Export Files
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Required Dependencies
+        run: pip install nbconvert
+      - name: Convert Jupyter notebooks into HTML for export
+        run: find . -name '*.ipynb' -type f -execdir jupyter nbconvert --template classic --to html {} \; -execdir rm {} \;
+      - name: Push notebooks to the gh-pages branch
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          FOLDER: artifact
+          BRANCH: gh-pages
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MESSAGE: "Build: ({sha}) {msg}"
+          SQUASH_HISTORY: true
