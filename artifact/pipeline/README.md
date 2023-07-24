@@ -144,8 +144,10 @@ The various scripts listed here perform the data processing:
 
 ```mermaid
 graph TD
-A[fa:fa-database JetBrains Datastore 10M Dataset] -->|Download ntbs_list.json, pick 100K notebooks|B
-B[fa:fa-database 100k-dataset.csv] -->|fetch_notebooks.py| C[fa:fa-book Download 100K Notebooks]
+A[fa:fa-database JetBrains Datastore 10M Dataset] 
+    -->|Download ntbs_list.json, pick 100K notebooks|B
+B[fa:fa-database 100k-dataset.csv]
+    -->|fetch_notebooks.py| C[fa:fa-book Download 100K Notebooks]
 C -->|Store| D[fa:fa-file Data 100K Notebooks]
 D -->|export_notebooks_to_html.py| E{HTML files by Theme}
 E --> F[Darcula]
@@ -158,13 +160,14 @@ J -->
     |process_notebook_html.py|L(nb_processed_cell_html.csv)
 L -->
     |get_first_interactive_cells.py|M(nb_first_interactive_cell.csv)
-F -->|Run pa11y|N[Generate A11y Scan Results aXe and HTMLCS]
-G -->|Run pa11y|N
-H -->|Run pa11y|N
-I -->|Run pa11y|N
-J -->|Run pa11y|N
-K -->|Run pa11y|N
-N -->|fetch_a11y_responses.py|O{Results}
+F -->N{Scan}
+G -->N
+H -->N
+I -->N
+J -->N
+K -->N
+N -->|pa11y_scan_parallel.py|X[pa11y-results]
+X -->|fetch_a11y_responses.py|O{Results}
 O -->P(a11y-aggregate-scan.csv)
 O -->Q(a11y-detailed-result.csv)
 Q -->|generate_accessibility_error_counts.py|R(errors-different-counts-a11y-analyze-errors-summary.csv)

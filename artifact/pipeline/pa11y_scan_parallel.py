@@ -1,15 +1,13 @@
+from collections import defaultdict
+import glob
 import multiprocessing
 from multiprocessing.pool import ThreadPool
 import os
 import subprocess
-import glob
-
-from collections import defaultdict
-
 
 THEMES = ['darcula', 'dark', 'horizon', 'light', 'material-darker', 'solarized']
 
-BASE_OUT_DIR_PA11Y='pa11y-results/'
+BASE_OUT_DIR_PA11Y = 'pa11y-results/'
 
 SERVING_DIRECTORY = 'serve/'
 
@@ -29,27 +27,26 @@ def prepare_output_directories():
 
 def prepare_subcommand(in_filepath, out_filepath):
     command = ['pa11y',
-            '--standard',
-            'WCAG2AA',
-            '--reporter',
-            'json',
-            '--runner',
-            'axe',
-            '--runner',
-            'htmlcs',
-            '--include-notices',
-            '--include-warnings',
-            f'{in_filepath}',
-            '>>',
-            f'{out_filepath}'
-            ]
+               '--standard',
+               'WCAG2AA',
+               '--reporter',
+               'json',
+               '--runner',
+               'axe',
+               '--runner',
+               'htmlcs',
+               '--include-notices',
+               '--include-warnings',
+               f'{in_filepath}',
+               '>>',
+               f'{out_filepath}'
+               ]
     return command
 
 
 def scan(command):
     out_file_path = command[-1]
     command = command[:-2]  # Trim the last two arguments of the command line query
-    print(f'Processing {command[-1]} into {out_file_path}')
     with open(out_file_path, 'w') as out_file_on_disk:
         subprocess.run(command, stdout=out_file_on_disk)
 
@@ -80,18 +77,17 @@ def find_empty_file_results():
 
 def main():
     # Output directory creation
-    # creation_commands = prepare_output_directories()
-    # run_in_batches(len(creation_commands), creation_commands)
+    creation_commands = prepare_output_directories()
+    run_in_batches(len(creation_commands), creation_commands)
+
     file_paths = []
     empty_files = find_empty_file_results()
     for k, v in empty_files.items():
-        print(k, len(v), v[:5])
         for filepath in v:
             file_paths.append(filepath)
 
     num_cpu = multiprocessing.cpu_count()
     print(f'Using {num_cpu} CPU cores')
-    # file_paths = glob.glob(f'{SERVING_DIRECTORY}**/*.html')
     print(f'Number of files: {len(file_paths)}')
     commands = []
     for f in file_paths:
@@ -101,9 +97,7 @@ def main():
         commands.append(command)
 
     print(f'Number of commands to execute: {len(commands)}')
-    # print(commands[:4])
     run_in_batches(num_cpu, commands)
 
 
 main()
-
