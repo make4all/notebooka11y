@@ -4,9 +4,9 @@ name: Process Jupyter Notebooks into HTML Export Files
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
   workflow_dispatch:
 
@@ -20,14 +20,14 @@ jobs:
       - name: Update Table of Contents links
         run: sed -i 's/.ipynb/.html/g' "Table of Contents.ipynb" && mv "Table of Contents.ipynb" "index.ipynb"
       - name: Convert Jupyter notebooks into HTML for export
-        run: find . -name '*.ipynb' -type f -execdir jupyter nbconvert --template classic --to html {} \; -execdir rm {} \;
-      - name: Remove unnecessary files from the repository structure
-        run: rm -rf data_out && rm -rf helper && rm -rf model && rm -rf pipeline
+        run: mkdir -p artifact/ && find . -name '*.ipynb' -type f -execdir jupyter nbconvert --template classic --to html {} \; -execdir rm {} \; && mv *.html artifact/
+      - name: Remove unnecessary files from the repository structure and copy additional files
+        run: rm -rf data_out && rm -rf helper && rm -rf model && rm -rf pipeline && mv LICENSE artifact/ && mv *.png artifact/ && mv plot_out/ artifact/plot_out/
       - name: Push notebooks to the gh-pages branch
         uses: s0/git-publish-subdir-action@develop
         env:
           REPO: self
-          FOLDER: .
+          FOLDER: artifact
           BRANCH: gh-pages
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: "Build: ({sha}) {msg}"

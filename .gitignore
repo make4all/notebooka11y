@@ -139,4 +139,4 @@ nbText.txt
 wordcloud.png
 
 # Unignored files
-!artifact/pipeline/input_data/100k-dataset.csv
+!pipeline/input_data/100k-dataset.csv
