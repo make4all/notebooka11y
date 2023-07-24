@@ -120,3 +120,56 @@ The various scripts listed here perform the data processing:
        - `linesOfCode`: Number of lines of code in various notebook cells.
    > The total time taken to execute the script and generate the required dataset is **630.35 seconds (10 minutes 30 seconds)**
 
+7. `process_notebooks.py`
+   - This stage of the pipeline takes as input the notebook files in `BASE_DATA_DIR` and the input list of notebooks `input_data/100k-dataset.csv`
+   - The result of this stage of the pipeline execution is:
+     - `OUTPUT_IMAGE_DIRECTORY`: Containing `base64` encoded image files which are further processed during classification
+     - `data_out/nb_processed.csv`: A flat file after processing each notebook resulting in 100K rows (excluding header) with the following structure:
+       - `fileNames`: Filename of the notebook
+       - `language`: Language used within the notebook
+       - `imports`: JSON encoded list of imports
+       - `num_images`: Total number of images/figures in the notebook
+       - `output_metadata`: Metadata of output types in the notebook
+       - `image_metadata`: Image specific metadata
+       - `has_matplotlib`
+       - `has_plotly`
+       - `has_bokeh`
+       - `code_lines`: JSON encoded list of number of code lines per cell in the notebook
+       - `total_code_lines`: Total number of code lines `sum(code_lines)`
+       - `markdown_lines`: JSON encoded list of number of markdown lines per cell in the notebook
+       - `sum_markdown_lines`: Total number of markdown lines `sum(markdown_lines)`
+   > This script takes a total of **936.07 seconds (15 minutes 36 seconds)** to execute and generate the required results.
+
+## Pipeline Execution Plan
+
+```mermaid
+graph TD
+A[fa:fa-database JetBrains Datastore 10M Dataset] -->|Download ntbs_list.json, pick 100K notebooks|B
+B[fa:fa-database 100k-dataset.csv] -->|fetch_notebooks.py| C[fa:fa-book Download 100K Notebooks]
+C -->|Store| D[fa:fa-file Data 100K Notebooks]
+D -->|export_notebooks_to_html.py| E{HTML files by Theme}
+E --> F[Darcula]
+E --> G[Horizon]
+E --> H[Material Darker]
+E --> I[Solarized]
+E --> J[Light]
+E --> K[Dark]
+J --> 
+    |process_notebook_html.py|L(nb_processed_cell_html.csv)
+L -->
+    |get_first_interactive_cells.py|M(nb_first_interactive_cell.csv)
+F -->|Run pa11y|N[Generate A11y Scan Results aXe and HTMLCS]
+G -->|Run pa11y|N
+H -->|Run pa11y|N
+I -->|Run pa11y|N
+J -->|Run pa11y|N
+K -->|Run pa11y|N
+N -->|fetch_a11y_responses.py|O{Results}
+O -->P(a11y-aggregate-scan.csv)
+O -->Q(a11y-detailed-result.csv)
+Q -->|generate_accessibility_error_counts.py|R(errors-different-counts-a11y-analyze-errors-summary.csv)
+D -->|process_notebooks.py|S[Base64 Images]
+S -->|classify_images.py|T(model-results.csv)
+D -->|process_notebooks.py|U(nb_processed.csv)
+U -->|analyze_function_calls.py|V(processed_function_calls.csv)
+```

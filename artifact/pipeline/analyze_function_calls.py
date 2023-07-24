@@ -21,6 +21,7 @@ FUNCTION_CALL_RESULTS = 'data_out/processed_function_calls.csv'
 
 def load_processed_notebooksdf(filename=NOTEBOOKS_WITH_FIGURE_OUTPUTS):
     df = pd.read_csv(filename)
+    df = df[df['num_images'] > 0]
     return df
 
 
