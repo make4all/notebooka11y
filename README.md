@@ -1,6 +1,9 @@
 # Notably Inaccessible – Data Driven Understanding of Data Science Notebook (In)Accessibility
 [Venkatesh Potluri](https://venkateshpotluri.me/), [Sudheesh Singanamalla](https://sudheesh.info/), [Nussara Tieanklin](https://nussarafirn.github.io/), and [Jennifer Mankoff](https://www.cs.washington.edu/people/faculty/jmankoff)
 
+[![Paper DOI](https://img.shields.io/badge/Research%20Paper%20DOI-10.1145/3597638.3608417-blue)](https://doi.org/10.1145/3597638.3608417)
+[![Zenodo DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8185050.svg)](https://doi.org/10.5281/zenodo.8185050)
+
 ## Overview
 
 Computational notebooks, tools that facilitate storytelling through exploration, data analysis, and information visualization, have become the widely accepted standard in the data science community. These notebooks have been widely adopted through 
@@ -15,7 +18,7 @@ This repository contains the processing and reproducibility scripts, along with 
 This repository contains two artifacts and depends on a third, externally hosted dataset:
 1. A [set of notebooks](pipeline/input_data/README.md) to reproduce the data-driven results that we present in the paper.
 2. The [pipeline](pipeline/README.md) that we built to process and analyse the 100K notebooks.
-3. [Datasets](TODO-Zenodo-Link) containing the results of the pipeline executions for quick reproducibility of the results in the paper. These are publicly hosted on Zenodo.
+3. [Datasets](https://zenodo.org/record/8185050) containing the results of the pipeline executions for quick reproducibility of the results in the paper. These are publicly hosted on Zenodo.
 
 ## Attribution
 
