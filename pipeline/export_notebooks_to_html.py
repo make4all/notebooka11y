@@ -19,6 +19,9 @@ THEME_CONVERSION_REPLACER = {
         }
 
 def read_file_paths():
+    '''
+    Reads all the file paths from the data directory and return a sorted list of file names
+    '''
     files = glob.glob(f'{DATA_DIR}*.ipynb')
     files = [f.split('/')[1] for f in files]
     files.sort()
@@ -26,15 +29,39 @@ def read_file_paths():
 
 
 def setup_serving_themes():
+    '''
+    Creates the necessary directories for the themes to be stored in
+    '''
     command = [['mkdir', '-p', f'{OUTPUT_DIR}{theme_name}'] for theme_name in THEMES]
     return command
 
 
 def run_in_batches(batch_size, executable_commands):
+    '''
+    Runs the input commands in batches of batch_size
+
+    Parameters
+    ----------
+        batch_size : int
+            The number of commands to be run in parallel
+        executable_commands : list
+            The list of commands to be run    
+    '''
     with ThreadPool(batch_size) as pool:
         pool.map(subprocess.run, executable_commands)
 
 def create_nbconvert_commands(files, theme_list):
+    '''
+    Creates the nbconvert commands to be run for the input files and themes
+    and returns the list of commands
+
+    Parameters
+    ----------
+        files : list
+            The list of files to be converted
+        theme_list : list
+            The list of themes to be converted to
+    '''
     executable_commands = []
     for file in files:
         for theme in theme_list:
@@ -53,6 +80,15 @@ def create_nbconvert_commands(files, theme_list):
 
 
 def find_failed_conversion_files(all_files_set):
+    '''
+    Finds the files that are not converted to a python notebook for each theme 
+    and returns a set of files that are not converted for each theme.
+
+    Parameters
+    ----------
+        all_files_set : set
+            The set of all files that need to be converted
+    '''
     result = {}
     for theme in THEMES:
         files = set([f.replace('.html', '.ipynb') for f in os.listdir(f'{OUTPUT_DIR}/{theme}/') if '.html' in f])
