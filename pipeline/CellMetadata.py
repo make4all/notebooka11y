@@ -15,7 +15,6 @@ class NotebookCell(object):
         Current file name (default '')
     cell_execution_order : str
         Cell execution order (default "not implemented")
-        
     cellType : NoneType        #TODO: is this right? 
         Type of cell (default None)
 
@@ -32,9 +31,65 @@ class NotebookCell(object):
     no_outputs(value)
         Sets that the cell has no output     #TODO: is it? 
     output_contains_graphics()
-
-
-
+        Returns the status of whether or not the cell contains graphics      #TODO: is it? 
+    output_contains_graphics(value)
+        Sets the status of whether or not the cell contains graphics 
+    output_contains_tables()
+        Returns the status of whether or not the output contain any tables
+    output_contains_tables(value)
+        Sets the status of whether or not the output contains any tables
+    has_interactive()
+        Returns the status of whether or not the cell has an interactive element 
+    has_interactive(value)
+        Sets the status of whether or not the cell has an interactive element
+    has_heading()
+        Returns the status of whether or not the cell has any headings
+    has_heading(value)
+        Sets the status of whether or not the cell has any headings 
+    has_links()
+        Returns the status of whether or not the cell has any links 
+    has_links(value)
+        Sets the status of whether or not the cell has any links
+    has_math_latex()
+        Returns the status of whether or not the cell contains any math latex
+    has_math_latex(value)
+        Sets the status of whether or not the cell contains any math latex
+    code_lines()
+        Returns the number of lines that present codes in the cell    #TODO: does this sound right?
+    code_lines(value)
+        Sets the number of lines that present codes in the cell 
+    has_imports()
+        Returns the status of whether or not the cell contains any imports
+    has_imports(value)
+        Sets the status of whether or not the cell contains any math latex
+    cell_execution_order()
+        Returns the execution order number of the cell
+    cell_execution_order(value)
+        Sets the execution order number of the cell
+    num_h1()
+        Returns the number of the heading level 1 in the cell (H1)
+    num_h1(value)
+        Sets the number of the heading level 1 in the cell (H1)
+    num_h2()
+        Returns the number of the heading level 2 in the cell (H2)
+    num_h2(value)
+        Sets the number of the heading level 2 in the cell (H2)
+    num_h3()
+        Returns the number of the heading level 3 in the cell (H3)
+    num_h3(value)
+        Sets the number of the heading level 3 in the cell (H3)
+    num_h4()
+        Returns the number of the heading level 4 in the cell (H4)
+    num_h4(value)
+        Sets the number of the heading level 4 in the cell (H4)
+    num_h5()
+        Returns the number of the heading level 5 in the cell (H5)
+    num_h5(value)
+        Sets the number of the heading level 5 in the cell (H5)
+    num_h6()
+        Returns the number of the heading level 6 in the cell (H6)
+    num_h6(value)
+        Sets the number of the heading level 6 in the cell (H6)
     """
 
 
@@ -45,7 +100,14 @@ class NotebookCell(object):
     cellType = None
 
     def __init__(self, filename, cellType):
-
+        """
+        Parameters
+        ----------
+        filename : str
+            The name of the file
+        cellType : NoneType
+            Type of cell (default None)
+        """
         if NotebookCell.fileNameState != filename:
             NotebookCell.cell_seq_num = 0
             NotebookCell.fileNameState = filename
