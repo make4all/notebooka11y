@@ -15,11 +15,22 @@ detailed_result_schema = ['ID', 'Notebook', 'Theme', 'Runner', 'Type', 'TypeCode
 
 
 def obtain_tasks():
+    '''
+    Returns the list of files to be processed
+    '''
     files_to_parse = glob.glob(f'{BASE_PA11Y_RESULT_DIR}**/*.json')
     return files_to_parse
 
 
 def get_task_information(task_item):
+    '''
+    Loads the file and returns the converted results into the required format #TODO: is this correct?
+
+    Parameters
+    ----------
+        task_item : str
+            The path of the file to be processed
+    '''
     with open(task_item, 'r') as f:
         try:
             data = json.load(f)
@@ -30,6 +41,15 @@ def get_task_information(task_item):
 
 
 def extract_information(filepath):
+    '''
+    Extracts the information from the filepath and returns the information of
+    the file in the provided format #TODO: is this too wage?
+
+    Parameters
+    ----------
+        filepath : str
+            The path of the file to be processed
+    '''
     id_string = sha256(filepath.encode('utf-8')).hexdigest()
     items = filepath.split('/')
     filename_with_extension = items[-1]
@@ -39,6 +59,16 @@ def extract_information(filepath):
 
 
 def convert_result(task_item, result):
+    '''
+    Converts and returns the result of the pa11y scan into the required format #TODO: is this correct?
+
+    Parameters
+    ----------
+        task_item : str
+            The path of the file to be processed
+        result : dict
+            The result of the pa11y scan
+    '''
     if len(result) <= 0:
         print(f'No response for {task_item["name"]} in scan. Skipping ...')
         return [], []
