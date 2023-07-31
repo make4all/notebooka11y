@@ -16,6 +16,14 @@ CELL_HTML_DATASET = 'data_out/nb_processed_cell_html.csv'
 
 
 def supify(fname):
+    '''
+    Returns the NotebookCell instance given an html notebook file by running an HTML Parser
+
+    Parameters
+    ----------
+        fname : str
+            The path of the file to be processed
+    '''
     soup = None
     try:
         soup = html.parse(fname).getroot()
@@ -25,6 +33,14 @@ def supify(fname):
 
 
 def get_headings(tree):
+    '''
+    Returns the heading counts and heading texts present in the given html document being parsed 
+
+    Parameters
+    ----------
+        tree : html.HtmlElement
+            The tree to be processed
+    '''
     h1 = tree.xpath('count(.//h1)')
     h2 = tree.xpath('count(.//h2)')
     h3 = tree.xpath('count(.//h3)')
@@ -56,6 +72,17 @@ def get_headings(tree):
 
 
 def get_cells_from_raw(fname, raw):
+    '''
+    Analyzes the given raw html and returns the metadata of the cells in the notebook
+    as a list of NotebookCell objects.
+
+    Parameters
+    ----------
+        fname : str
+            The path of the file to be processed
+        raw : html.HtmlElement | None
+            The raw html to be processed
+    '''
     if raw is None:
         return None
 

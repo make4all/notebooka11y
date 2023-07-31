@@ -8,6 +8,15 @@ DETAILED_ERROR_REPORT_FILE = 'data_out/a11y-detailed-result.csv'
 
 
 def analyse_errors(input_dataframe_filepath):
+    '''
+    Analyses the errors in the a11y error report and
+    returns a dataframe with the results of detailed error counts for the specific errors
+
+    Parameters
+    ----------
+        input_dataframe_filepath : str
+            The path of the file to be processed
+    '''
     notebook_theme_counter = defaultdict(set)
 
     print('Pass 1 - Identifying the correct notebooks to use')
@@ -70,6 +79,14 @@ def analyse_errors(input_dataframe_filepath):
 
 
 def analyze_summary(df):
+    '''
+    Analyses the result of the detailed error counts and outputs the sorted results to a csv file
+
+    Parameters
+    ----------
+        df : pandas.DataFrame
+            The dataframe to be processed
+    '''
     # same as df but sorted
     df.groupby('DetailCode') \
         .filter(lambda x: x['count'].nunique() > 1) \

@@ -16,12 +16,28 @@ JETBRAINS_DATASTORE_ENDPOINT = 'https://github-notebooks-update1.s3-eu-west-1.am
 
 
 def read_filenames():
+    '''
+    Reads all the file paths from the data directory and return a set of file names
+    '''
     filepaths = glob.glob(f'{OUTPUT_DIR}*.ipynb')
     files = [f.split('/')[1] for f in filepaths]
     return set(files)
 
 
 def download_notebook(notebook_name):
+    '''
+    Downloads the notebook from the JetBrains data source and saves it to the output directory
+
+    Parameters
+    ----------
+        notebook_name : str
+            The name of the notebook to be downloaded
+    
+    Returns
+    -------
+        bool
+            True if the notebook was downloaded successfully, False otherwise
+    '''
     notebook_url = f'{JETBRAINS_DATASTORE_ENDPOINT}/{notebook_name}'
     try:
         data = requests.get(notebook_url)

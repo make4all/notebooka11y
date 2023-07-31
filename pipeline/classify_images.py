@@ -59,6 +59,14 @@ labelNames = ['3D objects',
 
 
 def fig_classification(fig_class_model_path):
+    '''
+    Loads the previous trained model from a path and returns a model with a transformation layer 
+
+    Parameters
+    ----------
+        fig_class_model_path : str
+            The path of where the previous model is stored
+    '''
     fig_model = models.resnext101_32x8d()
     num_features = fig_model.fc.in_features
     fc = list(fig_model.fc.children())  # Remove last layer
@@ -90,6 +98,16 @@ failed = []
 
 
 def classify(img_path):
+    '''
+    Loads images from the input path and returns the result of the classification using the FV-CNN+FC-CNN classifier
+    of the chart type
+
+    Parameters
+    ----------
+        fig_class_model_path : str
+            The path of where the images of plots are stored
+
+    '''
     try:
         with open(img_path, 'r') as f:
             base64image = f.read()

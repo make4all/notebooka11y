@@ -17,6 +17,14 @@ os.makedirs(OUTPUT_IMAGE_DIRECTORY, exist_ok=True)
 
 
 def file_to_nb_node(filename):
+    '''
+    Returns the notebook data from the given file in the given Jupyter notebook format
+
+    Parameters
+    ----------
+        filename : str | None
+            The path of the file to be processed
+    '''
     f = None
     try:
         f = nbformat.read(f"{BASE_DATA_DIR}{filename}", as_version=4)
@@ -26,6 +34,14 @@ def file_to_nb_node(filename):
 
 
 def get_language(nb_data):
+    '''
+    Returns the programming language environment used to prepare the given notebook
+
+    Parameters
+    ----------
+        nb_data : dict | None
+            The notebook data to be processed
+    '''
     language = None
     if nb_data is None:
         return language
@@ -41,6 +57,14 @@ def get_language(nb_data):
 
 
 def has_matplotlib(line: "str"):
+    '''
+    Returns whether the given line contains a matplotlib subplot (small multiples)  function call
+
+    Parameters
+    ----------
+        line : str
+            The line to be processed
+    '''
     if line.strip().startswith("#"):
         return False
 
@@ -50,6 +74,14 @@ def has_matplotlib(line: "str"):
 
 
 def has_bokeh(line: "str"):
+    '''
+    Returns whether the given line contains a bokeh subplot function call
+
+    Parameters
+    ----------
+        line : str
+            The line to be processed
+    '''
     if line.strip().startswith("#"):
         return False
     if 'gridplot' in line:
@@ -64,6 +96,14 @@ def has_bokeh(line: "str"):
 
 
 def has_plotly(line: "str"):
+    '''
+    Returns whether the given line contains a plotly subplot (small multiples) function call
+
+    Parameters
+    ----------
+        line : str
+            The line to be processed
+    '''
     if line.strip().startswith("#"):
         return False
     if 'facet_' in line:
@@ -72,6 +112,14 @@ def has_plotly(line: "str"):
 
 
 def count_factory(check):
+    '''
+    Returns a function that counts the number of lines in the given source that satisfy the given check function
+
+    Parameters
+    ----------
+        check : function
+            The function to be used to check the lines
+    '''
     def fn(src):
         count = 0
         try:
@@ -85,6 +133,15 @@ def count_factory(check):
 
 
 def process_notebooks(row):
+    '''
+    Analyzes the input notebook and returns the counts of the various 
+    features of the notebook in the given format
+
+    Parameters
+    ----------
+        row : pandas.Series
+            The row of the dataframe to be processed
+    '''
     result = {}
 
     filename = row['fileNames']

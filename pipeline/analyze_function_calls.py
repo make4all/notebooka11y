@@ -20,12 +20,30 @@ FUNCTION_CALL_RESULTS = 'data_out/processed_function_calls.csv'
 
 
 def load_processed_notebooksdf(filename=NOTEBOOKS_WITH_FIGURE_OUTPUTS):
+    '''
+    Reads the input file and returns notebooks that contain programmatically generated figures / images
+    
+    Parameters
+    ----------
+        filename : str
+            The name of the file that contains names of notebooks with figures
+    '''
+
     df = pd.read_csv(filename)
     df = df[df['num_images'] > 0]
     return df
 
 
 def file_to_nb_node(x):
+    '''
+    Reads a notebook from an input file and returns a NotebookNode of the given version.
+    
+    Parameters
+    ----------
+        x : str
+            The name of an input file
+    '''
+
     a = None
     try:
         a = nbformat.read(f'{BASE_DATA_DIR}' + x, as_version=4)
@@ -35,6 +53,15 @@ def file_to_nb_node(x):
 
 
 def correct_code_lines(code_lines):
+    '''
+    Converts each jupyter notebook code cells and returns executable python code line by line
+
+    Parameters
+    ----------
+        code_lines : arr[String]
+            The code cell to be converted
+    '''
+
     replacements = JUPYTER_MAGICS
     corrected_code_lines = []
     for code_line in code_lines:
@@ -55,6 +82,18 @@ def correct_code_lines(code_lines):
 
 
 def remove_alias_code_lines(import_alias_mapping, code_lines):
+    '''
+    Removes import alias in each notebook and return with the full module names on each cell
+    
+    Parameters
+    ----------
+        import_alias_mapping : dict
+            The mapping between alias and module names
+
+        code_lines : str
+            The code cell to be converted
+    '''
+        
     corrected_code_lines = []
     for code_line in code_lines:
         for module, alias in import_alias_mapping.items():
@@ -65,6 +104,15 @@ def remove_alias_code_lines(import_alias_mapping, code_lines):
 
 
 def get_function_usage(filename):
+    '''
+    Return the function call names in each notebook 
+    
+    Parameters
+    ----------
+        filename : str
+            the name of the file
+    '''
+
     notebook = file_to_nb_node(filename)
     lines_of_code = 0
     # check if cell is of type source and append it to a list called sourceCells
