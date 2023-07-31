@@ -182,7 +182,7 @@ class NotebookCell(object):
     @no_outputs.setter
     def no_outputs(self, value):
         '''
-        Sets that the cell has no output     #TODO: is it? 
+        Sets the number of outputs associated with a given cell
 
         Raises
         ------
