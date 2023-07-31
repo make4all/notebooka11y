@@ -99,7 +99,7 @@ def run_in_batches(batch_size, executable_commands):
 
 def find_actual_paths(json_response_path):
     '''
-    Returns the path of the html file that corresponds to the given json file   #TODO: Does this sound right?
+    Returns the path of the html file that corresponds to the given JSON result file
 
     Parameters
     ----------
