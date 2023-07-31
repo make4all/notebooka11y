@@ -58,7 +58,7 @@ def correct_code_lines(code_lines):
 
     Parameters
     ----------
-        code_lines : arr   #TODO: type?
+        code_lines : arr[String]
             The code cell to be converted
     '''
 
