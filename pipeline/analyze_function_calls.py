@@ -21,7 +21,7 @@ FUNCTION_CALL_RESULTS = 'data_out/processed_function_calls.csv'
 
 def load_processed_notebooksdf(filename=NOTEBOOKS_WITH_FIGURE_OUTPUTS):
     '''
-    Reads the input file and returns notebooks that contain figures
+    Reads the input file and returns notebooks that contain programmatically generated figures / images
     
     Parameters
     ----------
