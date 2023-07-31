@@ -43,7 +43,7 @@ def get_task_information(task_item):
 def extract_information(filepath):
     '''
     Extracts the information from the filepath and returns the information of
-    the file in the provided format #TODO: is this too wage?
+    the file, theme, A11Y standard in a python dictionary
 
     Parameters
     ----------
