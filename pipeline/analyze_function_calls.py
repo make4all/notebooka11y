@@ -105,7 +105,7 @@ def remove_alias_code_lines(import_alias_mapping, code_lines):
 
 def get_function_usage(filename):
     '''
-    Return the funciton call names in each notebook 
+    Return the function call names in each notebook 
     
     Parameters
     ----------
