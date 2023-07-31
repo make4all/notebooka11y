@@ -344,7 +344,7 @@ class NotebookCell(object):
     @property
     def code_lines(self):
         '''
-        Returns the number of lines that present codes in the cell    #TODO: does this sound right?
+        Returns the number of lines of code in the current code cell
         
         Raises
         ------
