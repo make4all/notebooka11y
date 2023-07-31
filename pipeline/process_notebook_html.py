@@ -34,7 +34,7 @@ def supify(fname):
 
 def get_headings(tree):
     '''
-    Returns the heading counts and texts present in the given html tree    #TODO: does this sound right?
+    Returns the heading counts and heading texts present in the given html document being parsed 
 
     Parameters
     ----------
