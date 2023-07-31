@@ -168,7 +168,7 @@ class NotebookCell(object):
     @property
     def no_outputs(self):
         '''
-        Returns that the cell has no output     #TODO: is it? 
+        Returns the number of associated outputs with a given cell
 
         Raises
         ------
