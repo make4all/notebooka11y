@@ -106,7 +106,7 @@ class NotebookCell(object):
         filename : str
             The name of the file
         cellType : NoneType
-            Type of cell (default None)
+            Type of cell
         """
         if NotebookCell.fileNameState != filename:
             NotebookCell.cell_seq_num = 0
