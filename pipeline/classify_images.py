@@ -107,7 +107,6 @@ def classify(img_path):
         fig_class_model_path : str
             The path of where the images of plots are stored
 
-    TODO: need to describe try/catch too?
     '''
     try:
         with open(img_path, 'r') as f:
