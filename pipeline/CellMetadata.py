@@ -15,7 +15,7 @@ class NotebookCell(object):
         Current file name (default '')
     cell_execution_order : str
         Cell execution order (default "not implemented")
-    cellType : NoneType        #TODO: is this right? 
+    cellType : NoneType
         Type of cell (default None)
 
     Methods
