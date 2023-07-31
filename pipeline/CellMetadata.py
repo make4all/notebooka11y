@@ -379,7 +379,7 @@ class NotebookCell(object):
     @has_imports.setter
     def has_imports(self, value):
         '''
-        Sets the status of whether or not the cell contains any math latex
+        Sets the status of whether the code cell contains any module imports
 
         Raises
         ------
