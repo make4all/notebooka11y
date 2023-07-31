@@ -358,7 +358,7 @@ class NotebookCell(object):
     @code_lines.setter
     def code_lines(self, value):
         '''
-        Sets the number of lines that present codes in the cell 
+        Sets the number of lines of code in the current code cell 
 
         Raises
         ------
