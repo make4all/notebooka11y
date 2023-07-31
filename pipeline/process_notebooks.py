@@ -35,7 +35,7 @@ def file_to_nb_node(filename):
 
 def get_language(nb_data):
     '''
-    Returns the language of the given notebook data    #TODO: specify what language means here? 
+    Returns the programming language environment used to prepare the given notebook
 
     Parameters
     ----------
