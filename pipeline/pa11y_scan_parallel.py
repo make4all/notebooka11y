@@ -13,6 +13,15 @@ SERVING_DIRECTORY = 'serve/'
 
 
 def filename_extractor(filepath):
+    '''
+    Extracts the filename and theme from the filepath
+    and returns the filename in the format of {filename}.json and the theme
+
+    Parameters
+    ----------
+        filepath : str
+            The path of the file to be processed
+    '''
     items = filepath.split('/')
     filename_with_extension = items[-1]
     theme = items[-2]
@@ -21,11 +30,25 @@ def filename_extractor(filepath):
 
 
 def prepare_output_directories():
+    '''
+    Returns the commands to create the output directories for the pa11y results 
+    of each theme
+    '''
     command = [['mkdir', '-p', f'{BASE_OUT_DIR_PA11Y}{theme}'] for theme in THEMES]
     return command
 
 
 def prepare_subcommand(in_filepath, out_filepath):
+    '''
+    Returns the command to execute pa11y in the given format on the given file
+
+    Parameters
+    ----------
+        in_filepath : str
+            The path of the file to be processed
+        out_filepath : str
+            The path of the file to be written to
+    '''
     command = ['pa11y',
                '--standard',
                'WCAG2AA',
@@ -45,6 +68,14 @@ def prepare_subcommand(in_filepath, out_filepath):
 
 
 def scan(command):
+    '''
+    Executes the given command
+
+    Parameters
+    ----------
+        command : list
+            The command to be executed
+    '''
     out_file_path = command[-1]
     command = command[:-2]  # Trim the last two arguments of the command line query
     with open(out_file_path, 'w') as out_file_on_disk:
@@ -52,11 +83,29 @@ def scan(command):
 
 
 def run_in_batches(batch_size, executable_commands):
+    '''
+    Executes the given commands in batches of the given size
+
+    Parameters
+    ----------
+        batch_size : int
+            The size of the batch to be executed
+        executable_commands : list
+            The commands to be executed
+    '''
     with ThreadPool(batch_size) as pool:
         pool.map(scan, executable_commands)
 
 
 def find_actual_paths(json_response_path):
+    '''
+    Returns the path of the html file that corresponds to the given json file   #TODO: Does this sound right?
+
+    Parameters
+    ----------
+        json_response_path : str
+            The path of the json file to be processed
+    '''
     segments = json_response_path.split('/')
     html_file_path = f'{SERVING_DIRECTORY}{segments[1]}/{segments[2]}'
     html_file_path = html_file_path.replace('.json', '.html')
@@ -64,6 +113,9 @@ def find_actual_paths(json_response_path):
 
 
 def find_empty_file_results():
+    '''
+    Returns a dictionary of the empty files and their corresponding html path of each theme
+    '''
     empty_files = defaultdict(list)
     for theme in THEMES:
         files = glob.glob(f'{BASE_OUT_DIR_PA11Y}{theme}/*.json')
