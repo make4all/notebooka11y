@@ -99,7 +99,7 @@ failed = []
 
 def classify(img_path):
     '''
-    Loads chart images from the imput path and returns the result of the classification 
+    Loads images from the input path and returns the result of the classification using the FV-CNN+FC-CNN classifier
     of the chart type
 
     Parameters
