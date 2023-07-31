@@ -197,7 +197,7 @@ class NotebookCell(object):
     @property
     def output_contains_graphics(self):
         '''
-        Returns the status of whether or not the cell contains graphics      #TODO: is it? 
+        Returns the status of whether or not the cell contains graphics
 
         Raises
         ------
