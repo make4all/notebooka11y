@@ -27,7 +27,7 @@ class NotebookCell(object):
     has_output(value)
         To set the cell output
     no_outputs()
-        Returns that the cell has no output     #TODO: is it?          
+        Returns the number of outputs for the given cell    
     no_outputs(value)
         Sets that the cell has no output     #TODO: is it? 
     output_contains_graphics()
