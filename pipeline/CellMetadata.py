@@ -55,7 +55,7 @@ class NotebookCell(object):
     has_math_latex(value)
         Sets the status of whether or not the cell contains any math latex
     code_lines()
-        Returns the number of lines that present codes in the cell    #TODO: does this sound right?
+        Returns the number of lines that are present in the current code cell
     code_lines(value)
         Sets the number of lines that present codes in the cell 
     has_imports()
