@@ -60,7 +60,7 @@ def extract_information(filepath):
 
 def convert_result(task_item, result):
     '''
-    Converts and returns the result of the pa11y scan into the required format #TODO: is this correct?
+    Converts and returns the result of the pa11y scan into the required format
 
     Parameters
     ----------
