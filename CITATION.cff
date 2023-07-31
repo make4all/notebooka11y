@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+type: dataset
+message: "If you use the scripts, notebooks, or associated datasets please cite it as below."
+authors:
+- family-names: "Potluri"
+  given-names: "Venkatesh"
+  orcid: "https://orcid.org/0000-0002-5027-8831"
+- family-names: "Singanamalla"
+  given-names: "Sudheesh"
+  orcid: "https://orcid.org/0000-0003-2462-7273"
+- family-names: "Tieanklin"
+  given-names: "Nussara"
+  orcid: "https://orcid.org/0000-0002-3074-8699"
+- family-names: "Mankoff"
+  given-names: "Jennifer"
+  orcid: "https://orcid.org/0000-0001-9235-5324"
+title: "Notably Inaccessible – Data Driven Understanding of Data Science Notebook (In)Accessibility"
+version: 1.0.0
+date-released: 2023-07-30
+url: "https://github.com/make4all/notebooka11y"
