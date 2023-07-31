@@ -9,7 +9,7 @@ class NotebookCell(object):
 
     Attributes
     ----------
-    cell_seq_num : int        #TODO: is this right? 
+    cell_seq_num : int
         Sequence number of cells (default 0)
     fileNameState : str
         Current file name (default '')
