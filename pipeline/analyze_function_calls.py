@@ -88,7 +88,7 @@ def remove_alias_code_lines(import_alias_mapping, code_lines):
     Parameters
     ----------
         import_alias_mapping : dict
-            The mapping between alias and module names  #TODO please check
+            The mapping between alias and module names
 
         code_lines : str
             The code cell to be converted
