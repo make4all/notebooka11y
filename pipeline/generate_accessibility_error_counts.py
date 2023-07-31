@@ -81,6 +81,11 @@ def analyse_errors(input_dataframe_filepath):
 def analyze_summary(df):
     '''
     Analyses the result of the detailed error counts and outputs the sorted results to a csv file
+
+    Parameters
+    ----------
+        df : pandas.DataFrame
+            The dataframe to be processed
     '''
     # same as df but sorted
     df.groupby('DetailCode') \
