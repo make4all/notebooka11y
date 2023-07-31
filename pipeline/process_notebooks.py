@@ -18,7 +18,7 @@ os.makedirs(OUTPUT_IMAGE_DIRECTORY, exist_ok=True)
 
 def file_to_nb_node(filename):
     '''
-    Returns the notebook data from the given file in the given Jupiter notebook format
+    Returns the notebook data from the given file in the given Jupyter notebook format
 
     Parameters
     ----------
