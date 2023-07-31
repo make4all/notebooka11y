@@ -31,7 +31,7 @@ class NotebookCell(object):
     no_outputs(value)
         Sets the number of associated outputs count to the cell
     output_contains_graphics()
-        Returns the status of whether or not the cell contains graphics      #TODO: is it? 
+        Returns the status of whether or not the cell contains graphics
     output_contains_graphics(value)
         Sets the status of whether or not the cell contains graphics 
     output_contains_tables()
