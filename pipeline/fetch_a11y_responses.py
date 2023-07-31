@@ -24,7 +24,7 @@ def obtain_tasks():
 
 def get_task_information(task_item):
     '''
-    Loads the file and returns the converted results into the required format #TODO: is this correct?
+    Loads the file and returns the converted results into the required format
 
     Parameters
     ----------
