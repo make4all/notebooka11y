@@ -17,7 +17,7 @@ CELL_HTML_DATASET = 'data_out/nb_processed_cell_html.csv'
 
 def supify(fname):
     '''
-    Returns the cells of the notebook in the given html notebook file  #TODO: does this sound right?
+    Returns the NotebookCell instance given an html notebook file by running an HTML Parser
 
     Parameters
     ----------
