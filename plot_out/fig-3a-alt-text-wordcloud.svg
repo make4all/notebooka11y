@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200">
+<style>@font-face{font-family:'Droid Sans Mono';font-weight:normal;font-style:normal;src:url("data:application/font-woff;charset=utf-8;base64,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")format("woff");}</style>
+<style>text{font-family:'Droid Sans Mono';font-weight:normal;font-style:normal;}</style>
+<rect width="100%" height="100%" style="fill:white"></rect>
+<text transform="translate(20,80)" font-size="69" style="fill:rgb(42, 119, 142)">ColabOpen</text>
+<text transform="translate(93,152)" font-size="63" style="fill:rgb(33, 166, 133)">pngimage</text>
+<text transform="translate(77,198) rotate(-90)" font-size="62" style="fill:rgb(70, 52, 128)">png</text>
+<text transform="translate(204,185)" font-size="39" style="fill:rgb(37, 171, 130)">image</text>
+<text transform="translate(123,25)" font-size="34" style="fill:rgb(239, 229, 28)">text</text>
+<text transform="translate(326,36)" font-size="34" style="fill:rgb(71, 14, 97)">alt</text>
+<text transform="translate(92,106)" font-size="30" style="fill:rgb(63, 71, 136)">pngOpen</text>
+<text transform="translate(1,26)" font-size="30" style="fill:rgb(72, 27, 109)">JPG</text>
+<text transform="translate(283,104)" font-size="27" style="fill:rgb(31, 150, 139)">textalt</text>
+<text transform="translate(57,20)" font-size="26" style="fill:rgb(71, 17, 100)">Open</text>
+<text transform="translate(204,20)" font-size="20" style="fill:rgb(48, 106, 142)">Colabimage</text>
+<text transform="translate(100,195)" font-size="18" style="fill:rgb(134, 213, 73)">Colab</text>
+<text transform="translate(319,189)" font-size="18" style="fill:rgb(137, 213, 72)">20at</text>
+<text transform="translate(201,197)" font-size="17" style="fill:rgb(49, 103, 142)">Commons</text>
+<text transform="translate(108,167)" font-size="16" style="fill:rgb(44, 177, 126)">screen</text>
+<text transform="translate(128,39)" font-size="16" style="fill:rgb(189, 223, 38)">20Shot</text>
+<text transform="translate(16,167) rotate(-90)" font-size="16" style="fill:rgb(63, 188, 115)">Colabalt</text>
+<text transform="translate(34,182) rotate(-90)" font-size="16" style="fill:rgb(72, 33, 115)">Python</text>
+<text transform="translate(155,194)" font-size="16" style="fill:rgb(61, 188, 116)">data</text>
+<text transform="translate(92,176)" font-size="13" style="fill:rgb(45, 112, 142)">textOpen</text>
+<text transform="translate(265,29)" font-size="13" style="fill:rgb(33, 144, 141)">Dog</text>
+<text transform="translate(245,110)" font-size="13" style="fill:rgb(72, 26, 108)">title</text>
+<text transform="translate(294,39)" font-size="13" style="fill:rgb(68, 2, 86)">20de</text>
+<text transform="translate(1,193)" font-size="13" style="fill:rgb(44, 114, 142)">Check</text>
+<text transform="translate(299,112)" font-size="11" style="fill:rgb(71, 46, 124)">OutputSample</text>
+<text transform="translate(385,43)" font-size="11" style="fill:rgb(194, 223, 35)">P</text>
+<text transform="translate(87,183) rotate(-90)" font-size="11" style="fill:rgb(239, 229, 28)">pngScreen</text>
+<text transform="translate(168,180)" font-size="11" style="fill:rgb(72, 22, 104)">C3</text>
+<text transform="translate(204,34)" font-size="11" style="fill:rgb(53, 95, 141)">Logo</text>
+<text transform="translate(226,160)" font-size="11" style="fill:rgb(112, 207, 87)">ADramide</text>
+<text transform="translate(218,91)" font-size="11" style="fill:rgb(142, 214, 69)">20Maslow</text>
+<text transform="translate(352,171)" font-size="11" style="fill:rgb(46, 111, 142)">20del</text>
+<text transform="translate(332,197)" font-size="11" style="fill:rgb(236, 229, 27)">20ML</text>
+<text transform="translate(49,88)" font-size="9" style="fill:rgb(34, 140, 141)">crossvalidation</text>
+<text transform="translate(78,30)" font-size="9" style="fill:rgb(108, 205, 90)">jfif</text>
+<text transform="translate(216,98)" font-size="9" style="fill:rgb(147, 215, 65)">Human</text>
+<text transform="translate(274,5)" font-size="5" style="fill:rgb(42, 118, 142)">variablesCategoricas_EncodingBinario</text>
+<text transform="translate(4,72)" font-size="5" style="fill:rgb(68, 58, 131)">20PM</text>
+<text transform="translate(370,186)" font-size="5" style="fill:rgb(31, 153, 138)">learning</text>
+<text transform="translate(88,152)" font-size="5" style="fill:rgb(42, 176, 127)">de</text>
+<text transform="translate(128,54)" font-size="5" style="fill:rgb(147, 215, 65)">example</text>
+<text transform="translate(376,194)" font-size="5" style="fill:rgb(63, 72, 137)">Drawing</text>
+<text transform="translate(46,62)" font-size="5" style="fill:rgb(253, 231, 37)">Model</text>
+<text transform="translate(69,37)" font-size="5" style="fill:rgb(49, 103, 142)">pngScreenshot</text>
+<text transform="translate(247,97)" font-size="5" style="fill:rgb(33, 142, 141)">E5</text>
+<text transform="translate(137,88)" font-size="5" style="fill:rgb(72, 40, 120)">E7</text>
+<text transform="translate(20,131) rotate(-90)" font-size="5" style="fill:rgb(32, 146, 140)">variablesCategoricas_1</text>
+<text transform="translate(256,5)" font-size="5" style="fill:rgb(38, 173, 129)">9B</text>
+<text transform="translate(215,24)" font-size="5" style="fill:rgb(51, 99, 141)">dividergreen</text>
+<text transform="translate(396,75) rotate(-90)" font-size="5" style="fill:rgb(33, 145, 140)">LaMaldicionDeLaDimension</text>
+<text transform="translate(39,140) rotate(-90)" font-size="5" style="fill:rgb(173, 220, 48)">FeatureEngineering2</text>
+<text transform="translate(4,30)" font-size="5" style="fill:rgb(55, 184, 120)">Product</text>
+<text transform="translate(58,24)" font-size="5" style="fill:rgb(36, 134, 142)">ai</text>
+<text transform="translate(152,156) rotate(-90)" font-size="5" style="fill:rgb(69, 53, 129)">started</text>
+<text transform="translate(182,176)" font-size="5" style="fill:rgb(70, 8, 92)">Bluemix</text>
+<text transform="translate(32,56)" font-size="5" style="fill:rgb(71, 17, 100)">File</text>
+<text transform="translate(280,159)" font-size="5" style="fill:rgb(70, 10, 93)">Combined</text>
+<text transform="translate(298,195)" font-size="5" style="fill:rgb(42, 120, 142)">wrangling</text>
+<text transform="translate(174,84)" font-size="5" style="fill:rgb(46, 109, 142)">CNNSample</text>
+<text transform="translate(241,139) rotate(-90)" font-size="5" style="fill:rgb(35, 169, 131)">IBM</text>
+<text transform="translate(35,46)" font-size="5" style="fill:rgb(33, 166, 133)">pyspark</text>
+<text transform="translate(189,111)" font-size="5" style="fill:rgb(31, 153, 138)">ImageOpen</text>
+<text transform="translate(310,85) rotate(-90)" font-size="5" style="fill:rgb(43, 117, 142)">cognitiveclass</text>
+<text transform="translate(11,197)" font-size="5" style="fill:rgb(30, 155, 138)">20from</text>
+<text transform="translate(366,66)" font-size="5" style="fill:rgb(47, 107, 142)">E1</text>
+<text transform="translate(79,63) rotate(-90)" font-size="5" style="fill:rgb(38, 173, 129)">Iris</text>
+<text transform="translate(361,159)" font-size="5" style="fill:rgb(45, 112, 142)">mark</text>
+<text transform="translate(206,141)" font-size="5" style="fill:rgb(71, 45, 123)">time</text>
+<text transform="translate(335,69)" font-size="5" style="fill:rgb(45, 178, 125)">Spread</text>
+<text transform="translate(35,67)" font-size="5" style="fill:rgb(108, 205, 90)">notebook</text>
+<text transform="translate(272,38)" font-size="5" style="fill:rgb(72, 24, 106)">这里写图片描述</text>
+<text transform="translate(360,175)" font-size="5" style="fill:rgb(71, 45, 123)">Exercises</text>
+<text transform="translate(44,123)" font-size="5" style="fill:rgb(72, 41, 121)">jupyter</text>
+<text transform="translate(387,141)" font-size="5" style="fill:rgb(58, 186, 118)">now</text>
+<text transform="translate(210,70) rotate(-90)" font-size="5" style="fill:rgb(31, 161, 136)">MNIST</text>
+<text transform="translate(5,66) rotate(-90)" font-size="5" style="fill:rgb(99, 203, 95)">LogoOpen</text>
+<text transform="translate(240,55)" font-size="5" style="fill:rgb(200, 224, 32)">layer</text>
+<text transform="translate(382,139)" font-size="5" style="fill:rgb(68, 1, 84)">v</text>
+<text transform="translate(232,114)" font-size="4" style="fill:rgb(33, 166, 133)">Underfiting_OverFiting2</text>
+<text transform="translate(31,123) rotate(-90)" font-size="4" style="fill:rgb(70, 10, 93)">FeatureEngineering</text>
+<text transform="translate(41,40)" font-size="4" style="fill:rgb(67, 61, 132)">tree</text>
+<text transform="translate(15,63) rotate(-90)" font-size="4" style="fill:rgb(72, 40, 120)">network</text>
+<text transform="translate(104,136)" font-size="4" style="fill:rgb(31, 153, 138)">using</text>
+<text transform="translate(319,162) rotate(-90)" font-size="4" style="fill:rgb(115, 208, 86)">TreatmentMetastatic</text>
+<text transform="translate(41,161)" font-size="4" style="fill:rgb(39, 173, 129)">ColabCreative</text>
+<text transform="translate(50,143)" font-size="4" style="fill:rgb(72, 37, 118)">LicenseOpen</text>
+<text transform="translate(376,179)" font-size="4" style="fill:rgb(35, 137, 142)">20AM</text>
+<text transform="translate(103,68)" font-size="4" style="fill:rgb(52, 182, 121)">pngalt</text>
+<text transform="translate(218,6)" font-size="4" style="fill:rgb(70, 11, 94)">show</text>
+<text transform="translate(96,45)" font-size="4" style="fill:rgb(33, 144, 141)">Creative</text>
+<text transform="translate(169,169) rotate(-90)" font-size="4" style="fill:rgb(31, 162, 135)">Underfiting_OverFiting</text>
+<text transform="translate(3,38)" font-size="4" style="fill:rgb(37, 171, 130)">LBPublic</text>
+<text transform="translate(319,172)" font-size="4" style="fill:rgb(37, 131, 142)">estimator2</text>
+<text transform="translate(270,76) rotate(-90)" font-size="4" style="fill:rgb(45, 178, 125)">estimador_tipos</text>
+<text transform="translate(361,39)" font-size="4" style="fill:rgb(63, 72, 137)">Vector</text>
+<text transform="translate(352,85)" font-size="4" style="fill:rgb(58, 186, 118)">order</text>
+<text transform="translate(340,143)" font-size="4" style="fill:rgb(71, 45, 123)">Figure</text>
+<text transform="translate(99,24)" font-size="4" style="fill:rgb(35, 169, 131)">ColabSample</text>
+<text transform="translate(98,111)" font-size="4" style="fill:rgb(31, 151, 139)">AlertConcept</text>
+<text transform="translate(361,9)" font-size="4" style="fill:rgb(76, 194, 108)">NameImage</text>
+<text transform="translate(135,13)" font-size="4" style="fill:rgb(142, 214, 69)">img</text>
+<text transform="translate(5,170)" font-size="4" style="fill:rgb(101, 203, 94)">Diagram</text>
+<text transform="translate(313,87)" font-size="4" style="fill:rgb(30, 156, 137)">function</text>
+<text transform="translate(144,113)" font-size="4" style="fill:rgb(33, 144, 141)">Space</text>
+<text transform="translate(323,13)" font-size="4" style="fill:rgb(72, 37, 118)">training</text>
+<text transform="translate(182,182)" font-size="4" style="fill:rgb(189, 223, 38)">videoview</text>
+<text transform="translate(357,192)" font-size="4" style="fill:rgb(72, 41, 121)">Curve</text>
+<text transform="translate(328,39)" font-size="4" style="fill:rgb(39, 127, 142)">OutputOpen</text>
+<text transform="translate(382,108)" font-size="4" style="fill:rgb(147, 215, 65)">novel</text>
+<text transform="translate(201,130)" font-size="4" style="fill:rgb(112, 207, 87)">select</text>
+<text transform="translate(363,77)" font-size="4" style="fill:rgb(32, 146, 140)">single</text>
+<text transform="translate(359,152) rotate(-90)" font-size="4" style="fill:rgb(108, 205, 90)">logoPyTorch</text>
+<text transform="translate(374,160)" font-size="4" style="fill:rgb(68, 58, 131)">Screenshot</text>
+<text transform="translate(389,83)" font-size="4" style="fill:rgb(213, 226, 26)">gif</text>
+<text transform="translate(254,96)" font-size="4" style="fill:rgb(31, 152, 139)">need</text>
+<text transform="translate(133,67)" font-size="4" style="fill:rgb(96, 202, 96)">plot</text>
+<text transform="translate(132,47)" font-size="4" style="fill:rgb(80, 196, 106)">Science</text>
+<text transform="translate(52,182)" font-size="4" style="fill:rgb(218, 227, 25)">Trusted</text>
+<text transform="translate(101,52)" font-size="4" style="fill:rgb(34, 168, 132)">https</text>
+<text transform="translate(100,58)" font-size="4" style="fill:rgb(56, 88, 140)">service</text>
+<text transform="translate(176,111)" font-size="4" style="fill:rgb(39, 127, 142)">term</text>
+<text transform="translate(188,61) rotate(-90)" font-size="4" style="fill:rgb(223, 227, 24)">CodeCogsEqn</text>
+<text transform="translate(132,137) rotate(-90)" font-size="4" style="fill:rgb(59, 81, 139)">junctions</text>
+<text transform="translate(397,135) rotate(-90)" font-size="4" style="fill:rgb(32, 163, 134)">diagramGAN</text>
+<text transform="translate(389,33) rotate(-90)" font-size="4" style="fill:rgb(36, 135, 142)">ExamplesDCGAN</text>
+<text transform="translate(233,145) rotate(-90)" font-size="4" style="fill:rgb(64, 69, 136)">architecture</text>
+<text transform="translate(257,152) rotate(-90)" font-size="4" style="fill:rgb(35, 169, 131)">derivative</text>
+<text transform="translate(387,180)" font-size="4" style="fill:rgb(72, 27, 109)">hot</text>
+<text transform="translate(3,180)" font-size="4" style="fill:rgb(35, 138, 141)">Picture</text>
+<text transform="translate(152,98)" font-size="4" style="fill:rgb(46, 179, 124)">D0</text>
+<text transform="translate(361,197)" font-size="4" style="fill:rgb(33, 143, 141)">Comment</text>
+<text transform="translate(20,61) rotate(-90)" font-size="4" style="fill:rgb(184, 222, 41)">showing</text>
+<text transform="translate(283,129)" font-size="4" style="fill:rgb(67, 61, 132)">block</text>
+<text transform="translate(283,65)" font-size="4" style="fill:rgb(231, 228, 25)">one</text>
+<text transform="translate(149,54)" font-size="4" style="fill:rgb(70, 8, 92)">decision</text>
+<text transform="translate(31,198)" font-size="4" style="fill:rgb(58, 84, 140)">图片名称</text>
+<text transform="translate(25,116) rotate(-90)" font-size="4" style="fill:rgb(68, 59, 132)">PNGheader</text>
+<text transform="translate(317,23)" font-size="4" style="fill:rgb(31, 148, 140)">Icon</text>
+<text transform="translate(360,184)" font-size="4" style="fill:rgb(70, 51, 127)">t5</text>
+<text transform="translate(240,62)" font-size="4" style="fill:rgb(61, 188, 116)">sample</text>
+</svg>
